@@ -1,40 +1,104 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Head from 'next/head';
 import { format, parseISO } from 'date-fns';
-import { getDeals } from '../lib/supabase';
+import { getDeals, getTotalCount } from '../lib/supabase';
 import DealCard from '../components/DealCard';
 import { SkeletonGrid } from '../components/SkeletonCard';
 
 const SITE_NAME = "Today's Best Deals";
 const SITE_TAGLINE = "Fresh Amazon deals, coupon codes & discounts — updated daily.";
 
+// Group flat deals array into { date: [deals] }
+function groupByDate(deals) {
+  const grouped = {};
+  deals.forEach((deal) => {
+    const date = deal.deal_date;
+    if (!grouped[date]) grouped[date] = [];
+    grouped[date].push(deal);
+  });
+  return grouped;
+}
+
 export default function Home() {
+  const [deals, setDeals] = useState([]);
   const [groupedDeals, setGroupedDeals] = useState({});
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(0);
   const [search, setSearch] = useState('');
   const [query, setQuery] = useState('');
   const [totalCount, setTotalCount] = useState(0);
 
-  const fetchDeals = useCallback(async (q) => {
+  const loaderRef = useRef(null);
+  const searchTimer = useRef(null);
+
+  // Initial load + search reset
+  const fetchInitial = useCallback(async (q) => {
     setLoading(true);
-    const data = await getDeals(q);
-    setGroupedDeals(data);
-    const count = Object.values(data).reduce((acc, arr) => acc + arr.length, 0);
-    setTotalCount(count);
+    setDeals([]);
+    setGroupedDeals({});
+    setPage(0);
+    setHasMore(true);
+
+    const [result, total] = await Promise.all([
+      getDeals(q, 0),
+      getTotalCount(),
+    ]);
+
+    setDeals(result.deals);
+    setGroupedDeals(groupByDate(result.deals));
+    setHasMore(result.hasMore);
+    setTotalCount(total);
+    setPage(1);
     setLoading(false);
   }, []);
 
+  // Load next page
+  const fetchMore = useCallback(async (q, currentPage) => {
+    if (loadingMore || !hasMore) return;
+    setLoadingMore(true);
+
+    const result = await getDeals(q, currentPage);
+
+    setDeals((prev) => {
+      const merged = [...prev, ...result.deals];
+      setGroupedDeals(groupByDate(merged));
+      return merged;
+    });
+    setHasMore(result.hasMore);
+    setPage(currentPage + 1);
+    setLoadingMore(false);
+  }, [loadingMore, hasMore]);
+
+  // First load
   useEffect(() => {
-    fetchDeals('');
-  }, [fetchDeals]);
+    fetchInitial('');
+  }, [fetchInitial]);
 
   // Debounced search
   useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchDeals(query);
+    if (searchTimer.current) clearTimeout(searchTimer.current);
+    searchTimer.current = setTimeout(() => {
+      fetchInitial(query);
     }, 400);
-    return () => clearTimeout(timer);
-  }, [query, fetchDeals]);
+    return () => clearTimeout(searchTimer.current);
+  }, [query, fetchInitial]);
+
+  // Infinite scroll — watch the loader div at bottom
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loadingMore && !loading) {
+          fetchMore(query, page);
+        }
+      },
+      { threshold: 0.1, rootMargin: '200px' }
+    );
+
+    if (loaderRef.current) observer.observe(loaderRef.current);
+    return () => observer.disconnect();
+  }, [hasMore, loadingMore, loading, page, query, fetchMore]);
 
   const handleSearch = (e) => {
     const val = e.target.value;
@@ -66,7 +130,6 @@ export default function Home() {
         <meta name="description" content={SITE_TAGLINE} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
-        {/* Open Graph */}
         <meta property="og:title" content={SITE_NAME} />
         <meta property="og:description" content={SITE_TAGLINE} />
         <meta property="og:type" content="website" />
@@ -99,9 +162,7 @@ export default function Home() {
 
       {/* Hero */}
       <section className="hero">
-        <div className="hero-eyebrow">
-          🔥 Updated Daily
-        </div>
+        <div className="hero-eyebrow">🔥 Updated Daily</div>
         <h1>
           Best Amazon<br />
           <em>Deals Today</em>
@@ -126,26 +187,45 @@ export default function Home() {
             </p>
           </div>
         ) : (
-          sortedDates.map((date) => {
-            const deals = groupedDeals[date];
-            const { day, month, year } = formatDateHeading(date);
-            return (
-              <section key={date} className="date-section">
-                <div className="date-header">
-                  <h2 className="date-label">
-                    <span>{month} {day}</span>{year ? ` ${year}` : ''}
-                  </h2>
-                  <div className="date-line" />
-                  <span className="date-count">{deals.length} deal{deals.length !== 1 ? 's' : ''}</span>
+          <>
+            {sortedDates.map((date) => {
+              const dayDeals = groupedDeals[date];
+              const { day, month, year } = formatDateHeading(date);
+              return (
+                <section key={date} className="date-section">
+                  <div className="date-header">
+                    <h2 className="date-label">
+                      <span>{month} {day}</span>{year ? ` ${year}` : ''}
+                    </h2>
+                    <div className="date-line" />
+                    <span className="date-count">
+                      {dayDeals.length} deal{dayDeals.length !== 1 ? 's' : ''}
+                    </span>
+                  </div>
+                  <div className="deals-grid">
+                    {dayDeals.map((deal) => (
+                      <DealCard key={deal.id} deal={deal} />
+                    ))}
+                  </div>
+                </section>
+              );
+            })}
+
+            {/* Infinite scroll trigger + loading indicator */}
+            <div ref={loaderRef} style={{ marginTop: 16 }}>
+              {loadingMore && (
+                <div className="load-more-indicator">
+                  <div className="load-more-spinner" />
+                  <span>Loading more deals...</span>
                 </div>
-                <div className="deals-grid">
-                  {deals.map((deal) => (
-                    <DealCard key={deal.id} deal={deal} />
-                  ))}
+              )}
+              {!hasMore && deals.length > 0 && (
+                <div className="all-loaded">
+                  🎉 You have seen all {totalCount} deals!
                 </div>
-              </section>
-            );
-          })
+              )}
+            </div>
+          </>
         )}
       </main>
 
@@ -155,9 +235,7 @@ export default function Home() {
           As an Amazon Associate, we earn from qualifying purchases.
           Prices and availability are subject to change.
         </p>
-        <p>
-          © {new Date().getFullYear()} HotDeals. All rights reserved.
-        </p>
+        <p>© {new Date().getFullYear()} HotDeals. All rights reserved.</p>
       </footer>
     </>
   );
