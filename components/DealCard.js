@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import Image from 'next/image';
 
 export default function DealCard({ deal }) {
   const [copied, setCopied] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
   const {
     title,
@@ -14,6 +14,7 @@ export default function DealCard({ deal }) {
     coupon_code,
     affiliate_link,
     platform = 'amazon',
+    description,
   } = deal;
 
   const discount =
@@ -29,6 +30,12 @@ export default function DealCard({ deal }) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
+  };
+
+  const handleToggleDetails = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDetailsOpen((prev) => !prev);
   };
 
   const fallbackImage = 'https://via.placeholder.com/300x300?text=No+Image';
@@ -71,6 +78,21 @@ export default function DealCard({ deal }) {
               >
                 {copied ? '✓ Copied' : 'Copy'}
               </button>
+            </div>
+          )}
+
+          {/* Product Details Toggle — only shows if description exists */}
+          {description && (
+            <div className="details-wrap" onClick={handleToggleDetails}>
+              <button className="details-toggle-btn">
+                <span>Product Details</span>
+                <span className={`details-arrow ${detailsOpen ? 'open' : ''}`}>▼</span>
+              </button>
+              {detailsOpen && (
+                <div className="details-content">
+                  {description}
+                </div>
+              )}
             </div>
           )}
 
