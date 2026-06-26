@@ -4,11 +4,13 @@ import { format, parseISO } from 'date-fns';
 import { getDeals, getTotalCount } from '../lib/supabase';
 import DealCard from '../components/DealCard';
 import { SkeletonGrid } from '../components/SkeletonCard';
+import Header from '../components/Header';
 
-const SITE_NAME = "Today's Best Deals";
-const SITE_TAGLINE = "Fresh Amazon deals, coupon codes & discounts — updated daily.";
+const SITE_NAME = "WhileUShop.com — Best Amazon Deals, Coupons & Freebies";
+const SITE_DESC = "Find the best Amazon deals, coupon codes, discounts and freebies updated daily. Save more and shop smart with WhileUShop.com.";
+const SITE_KEYWORDS = "amazon deals, coupon codes, amazon coupons, best deals today, discount codes, freebies, promo codes, amazon discounts, deals of the day, online shopping deals, WhileUShop";
+const SITE_URL = "https://www.whileushop.com";
 
-// Group flat deals array into { date: [deals] }
 function groupByDate(deals) {
   const grouped = {};
   deals.forEach((deal) => {
@@ -33,19 +35,13 @@ export default function Home() {
   const loaderRef = useRef(null);
   const searchTimer = useRef(null);
 
-  // Initial load + search reset
   const fetchInitial = useCallback(async (q) => {
     setLoading(true);
     setDeals([]);
     setGroupedDeals({});
     setPage(0);
     setHasMore(true);
-
-    const [result, total] = await Promise.all([
-      getDeals(q, 0),
-      getTotalCount(),
-    ]);
-
+    const [result, total] = await Promise.all([getDeals(q, 0), getTotalCount()]);
     setDeals(result.deals);
     setGroupedDeals(groupByDate(result.deals));
     setHasMore(result.hasMore);
@@ -54,13 +50,10 @@ export default function Home() {
     setLoading(false);
   }, []);
 
-  // Load next page
   const fetchMore = useCallback(async (q, currentPage) => {
     if (loadingMore || !hasMore) return;
     setLoadingMore(true);
-
     const result = await getDeals(q, currentPage);
-
     setDeals((prev) => {
       const merged = [...prev, ...result.deals];
       setGroupedDeals(groupByDate(merged));
@@ -71,21 +64,14 @@ export default function Home() {
     setLoadingMore(false);
   }, [loadingMore, hasMore]);
 
-  // First load
-  useEffect(() => {
-    fetchInitial('');
-  }, [fetchInitial]);
+  useEffect(() => { fetchInitial(''); }, [fetchInitial]);
 
-  // Debounced search
   useEffect(() => {
     if (searchTimer.current) clearTimeout(searchTimer.current);
-    searchTimer.current = setTimeout(() => {
-      fetchInitial(query);
-    }, 400);
+    searchTimer.current = setTimeout(() => { fetchInitial(query); }, 400);
     return () => clearTimeout(searchTimer.current);
   }, [query, fetchInitial]);
 
-  // Infinite scroll — watch the loader div at bottom
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -95,7 +81,6 @@ export default function Home() {
       },
       { threshold: 0.1, rootMargin: '200px' }
     );
-
     if (loaderRef.current) observer.observe(loaderRef.current);
     return () => observer.disconnect();
   }, [hasMore, loadingMore, loading, page, query, fetchMore]);
@@ -106,9 +91,7 @@ export default function Home() {
     setQuery(val);
   };
 
-  const sortedDates = Object.keys(groupedDeals).sort((a, b) =>
-    new Date(b) - new Date(a)
-  );
+  const sortedDates = Object.keys(groupedDeals).sort((a, b) => new Date(b) - new Date(a));
 
   const formatDateHeading = (dateStr) => {
     try {
@@ -127,64 +110,44 @@ export default function Home() {
     <>
       <Head>
         <title>{SITE_NAME}</title>
-        <meta name="description" content={SITE_TAGLINE} />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-        <meta property="og:title" content={SITE_NAME} />
-        <meta property="og:description" content={SITE_TAGLINE} />
+        <meta name="description" content={SITE_DESC} />
+        <meta name="keywords" content={SITE_KEYWORDS} />
+
+        {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
+        <meta property="og:url" content={SITE_URL} />
+        <meta property="og:title" content={SITE_NAME} />
+        <meta property="og:description" content={SITE_DESC} />
+        <meta property="og:image" content={`${SITE_URL}/icon-512.png`} />
+        <meta property="og:site_name" content="WhileUShop.com" />
+        <meta property="og:locale" content="en_US" />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content={SITE_URL} />
+        <meta name="twitter:title" content={SITE_NAME} />
+        <meta name="twitter:description" content={SITE_DESC} />
+        <meta name="twitter:image" content={`${SITE_URL}/icon-512.png`} />
+
+        {/* Canonical */}
+        <link rel="canonical" href={SITE_URL} />
       </Head>
 
-      {/* Header */}
-      <header className="header">
-        <div className="header-inner">
-          <div className="logo">
-            <div className="logo-icon">🔥</div>
-            <span className="logo-text">Hot<span>Deals</span></span>
-          </div>
+      <Header search={search} onSearch={handleSearch} totalCount={totalCount} />
 
-          <div className="search-wrap">
-            <span className="search-icon">🔍</span>
-            <input
-              type="text"
-              className="search-input"
-              placeholder="Search deals..."
-              value={search}
-              onChange={handleSearch}
-            />
-          </div>
-
-          <div className="deal-count-badge">
-            <strong>{totalCount}</strong> active deals
-          </div>
-        </div>
-      </header>
-
-      {/* Hero */}
       <section className="hero">
-        <div className="hero-eyebrow">🔥 Updated Daily</div>
-        <h1>
-          Best Amazon<br />
-          <em>Deals Today</em>
-        </h1>
-        <p className="hero-sub">{SITE_TAGLINE}</p>
+        <h1>Best Amazon<br /><em>Deals Today</em></h1>
+        <p className="hero-sub">Fresh Amazon deals, coupon codes &amp; discounts — updated daily.</p>
       </section>
 
-      {/* Deals */}
       <main className="container" style={{ paddingTop: 8, paddingBottom: 40 }}>
         {loading ? (
-          <div style={{ marginTop: 32 }}>
-            <SkeletonGrid />
-          </div>
+          <div style={{ marginTop: 32 }}><SkeletonGrid /></div>
         ) : sortedDates.length === 0 ? (
           <div className="empty-state">
             <div className="empty-icon">🛍️</div>
             <h3>No deals found</h3>
-            <p>
-              {query
-                ? `No results for "${query}". Try a different search.`
-                : 'Check back soon — new deals are added daily!'}
-            </p>
+            <p>{query ? `No results for "${query}". Try a different search.` : 'Check back soon — new deals are added daily!'}</p>
           </div>
         ) : (
           <>
@@ -198,9 +161,7 @@ export default function Home() {
                       <span>{month} {day}</span>{year ? ` ${year}` : ''}
                     </h2>
                     <div className="date-line" />
-                    <span className="date-count">
-                      {dayDeals.length} deal{dayDeals.length !== 1 ? 's' : ''}
-                    </span>
+                    <span className="date-count">{dayDeals.length} deal{dayDeals.length !== 1 ? 's' : ''}</span>
                   </div>
                   <div className="deals-grid">
                     {dayDeals.map((deal) => (
@@ -210,8 +171,6 @@ export default function Home() {
                 </section>
               );
             })}
-
-            {/* Infinite scroll trigger + loading indicator */}
             <div ref={loaderRef} style={{ marginTop: 16 }}>
               {loadingMore && (
                 <div className="load-more-indicator">
@@ -220,22 +179,16 @@ export default function Home() {
                 </div>
               )}
               {!hasMore && deals.length > 0 && (
-                <div className="all-loaded">
-                  🎉 You have seen all {totalCount} deals!
-                </div>
+                <div className="all-loaded">🎉 You have seen all {totalCount} deals!</div>
               )}
             </div>
           </>
         )}
       </main>
 
-      {/* Footer */}
       <footer className="footer">
-        <p>
-          As an Amazon Associate, we earn from qualifying purchases.
-          Prices and availability are subject to change.
-        </p>
-        <p>© {new Date().getFullYear()} HotDeals. All rights reserved.</p>
+        <p>As an Amazon Associate, we earn from qualifying purchases. Prices and availability are subject to change.</p>
+        <p>© {new Date().getFullYear()} <a href={SITE_URL}>WhileUShop.com</a> — All rights reserved.</p>
       </footer>
     </>
   );
