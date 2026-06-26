@@ -1,35 +1,73 @@
 import { useState } from 'react';
 import Link from 'next/link';
 
+const SOCIAL_LINKS = [
+  { name: 'Telegram',  href: 'https://t.me/whileushop',                             top: '0%',   height: '20%' },
+  { name: 'Facebook',  href: 'https://www.facebook.com/whileushop786',               top: '20%',  height: '20%' },
+  { name: 'Instagram', href: 'https://instagram.com/crazydealshunter',               top: '40%',  height: '20%' },
+  { name: 'WhatsApp',  href: 'https://chat.whatsapp.com/Ei6fHrUYhyx5GZTHBF5IFF',    top: '60%',  height: '20%' },
+  { name: 'YouTube',   href: 'https://www.youtube.com/@SnagItUSA',                   top: '80%',  height: '20%' },
+];
+
 export default function Header({ search, onSearch, totalCount }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <>
-      {/* Top Logo Banner */}
-      <div className="logo-banner">
-        <Link href="/">
-          <img src="/logo.png" alt="WhileUShop.com — Deals, Coupons & Freebies" className="site-logo" />
+      {/* ── Sticky Top Bar: Logo left + Menu right ── */}
+      <header className="sticky-header">
+        <Link href="/" className="sticky-logo">
+          <img src="/logo.png" alt="WhileUShop.com" className="sticky-logo-img" />
         </Link>
-      </div>
 
-      {/* Social Media Banner */}
+        <div className="sticky-right">
+          <button
+            className="menu-btn"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Open menu"
+          >
+            {menuOpen ? '✕' : '☰'}
+          </button>
+        </div>
+      </header>
+
+      {/* ── Social Media Banner with clickable zones ── */}
       <div className="social-banner">
-        <img src="/social-media.png" alt="Join our Telegram, Facebook, Instagram, WhatsApp and YouTube channels" className="social-banner-img" />
+        <img
+          src="/social-media.png"
+          alt="Join our social channels"
+          className="social-banner-img"
+          useMap="#social-map"
+        />
+        {/* Overlay clickable zones using absolute positioned links */}
+        {SOCIAL_LINKS.map((s) => (
+          <a
+            key={s.name}
+            href={s.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="social-zone"
+            style={{ top: s.top, height: s.height }}
+            aria-label={`Join our ${s.name} channel`}
+            title={s.name}
+          />
+        ))}
       </div>
 
-      {/* Amazon Storefront Banner */}
+      {/* ── Amazon Storefront Banner ── */}
       <div className="amazon-banner">
         <a href="https://www.amazon.com/shop/whileushop" target="_blank" rel="noopener noreferrer">
-          <img src="/amazon-storefront.png" alt="Shop our Amazon Storefront — Hand-picked deals and top recommendations" className="amazon-banner-img" />
+          <img
+            src="/amazon-storefront.png"
+            alt="Shop our Amazon Storefront — Hand-picked deals and top recommendations"
+            className="amazon-banner-img"
+          />
         </a>
       </div>
 
-      {/* Main Nav — search + deal count + menu only */}
-      <header className="header">
-        <div className="header-inner">
-
-          {/* Search bar — full width on left */}
+      {/* ── Search Bar below banners ── */}
+      <div className="search-bar-wrap">
+        <div className="search-bar-inner">
           <div className="search-wrap">
             <span className="search-icon">🔍</span>
             <input
@@ -40,25 +78,13 @@ export default function Header({ search, onSearch, totalCount }) {
               onChange={onSearch}
             />
           </div>
-
-          <div className="header-right">
-            <div className="deal-count-badge">
-              <strong>{totalCount}</strong> active deals
-            </div>
-
-            {/* Hamburger Menu */}
-            <button
-              className="menu-btn"
-              onClick={() => setMenuOpen(!menuOpen)}
-              aria-label="Open menu"
-            >
-              {menuOpen ? '✕' : '☰'}
-            </button>
+          <div className="deal-count-badge">
+            <strong>{totalCount}</strong> active deals
           </div>
         </div>
-      </header>
+      </div>
 
-      {/* Slide-in Side Menu */}
+      {/* ── Slide-in Side Menu ── */}
       {menuOpen && (
         <>
           <div className="menu-overlay" onClick={() => setMenuOpen(false)} />
