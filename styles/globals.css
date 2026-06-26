@@ -430,6 +430,54 @@ img { max-width: 100%; display: block; }
   transform: scale(1.01);
 }
 
+/* ── Product Details ── */
+.details-wrap {
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+  cursor: pointer;
+}
+
+.details-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 2px 0;
+  gap: 6px;
+}
+
+.details-arrow {
+  font-size: 10px;
+  transition: transform 0.2s;
+  display: inline-block;
+  color: var(--accent);
+}
+
+.details-arrow.open {
+  transform: rotate(180deg);
+}
+
+.details-content {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  white-space: pre-line;
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  border-left: 2px solid var(--accent);
+}
+
 /* ── No Deals / Empty State ── */
 .empty-state {
   text-align: center;
@@ -447,6 +495,39 @@ img { max-width: 100%; display: block; }
   font-weight: 700;
   color: var(--text);
   margin-bottom: 8px;
+}
+
+/* ── Infinite Scroll ── */
+.load-more-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.load-more-spinner {
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.all-loaded {
+  text-align: center;
+  padding: 32px;
+  color: var(--text-dim);
+  font-size: 14px;
+  border-top: 1px solid var(--border);
+  margin-top: 8px;
 }
 
 /* ── Footer ── */
