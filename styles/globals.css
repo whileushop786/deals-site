@@ -602,8 +602,8 @@ img { max-width: 100%; display: block; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
-  height: 70px;
+  padding: 0 20px;
+  height: 80px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.08);
 }
 
@@ -614,9 +614,9 @@ img { max-width: 100%; display: block; }
 }
 
 .sticky-logo-img {
-  height: 54px;
+  height: 66px;
   width: auto;
-  max-width: 260px;
+  max-width: 320px;
   object-fit: contain;
 }
 
@@ -948,8 +948,8 @@ img { max-width: 100%; display: block; }
 
 /* ── Responsive for new elements ── */
 @media (max-width: 640px) {
-  .sticky-header { height: 56px; padding: 0 12px; }
-  .sticky-logo-img { height: 40px; max-width: 180px; }
+  .sticky-header { height: 70px; padding: 0 12px; }
+  .sticky-logo-img { height: 54px; max-width: 220px; }
   .side-menu { width: 260px; }
   .deal-count-badge { display: none; }
   .search-bar-wrap { padding: 8px 12px; }
