@@ -592,34 +592,76 @@ img { max-width: 100%; display: block; }
   .deals-grid { grid-template-columns: 1fr; }
 }
 
-/* ── Logo Banner ── */
-.logo-banner {
-  background: #fff;
+/* ── Sticky Header ── */
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #ffffff;
+  border-bottom: 2px solid #e5e5e5;
   display: flex;
-  justify-content: center;
   align-items: center;
-  padding: 12px 20px;
-  border-bottom: 1px solid #e5e5e5;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: 70px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
 }
 
-.site-logo {
-  max-height: 80px;
+.sticky-logo {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.sticky-logo-img {
+  height: 54px;
   width: auto;
-  max-width: 100%;
+  max-width: 260px;
   object-fit: contain;
 }
 
-/* ── Social Media Banner ── */
+.sticky-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ── Search bar below banners ── */
+.search-bar-wrap {
+  background: #0f0f0f;
+  border-bottom: 1px solid #2e2e2e;
+  padding: 10px 16px;
+}
+
+.search-bar-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ── Social Media Banner with clickable zones ── */
 .social-banner {
-  background: #fff;
-  overflow: hidden;
+  position: relative;
+  display: block;
   border-bottom: 1px solid #e5e5e5;
+  line-height: 0;
 }
 
 .social-banner-img {
   width: 100%;
   height: auto;
   display: block;
+}
+
+/* Each clickable zone covers full width of its row */
+.social-zone {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  display: block;
+  cursor: pointer;
 }
 
 /* ── Amazon Storefront Banner ── */
@@ -640,7 +682,7 @@ img { max-width: 100%; display: block; }
   opacity: 0.95;
 }
 
-/* ── Header Right ── */
+/* ── Header Right (legacy, kept for compatibility) ── */
 .header-right {
   display: flex;
   align-items: center;
@@ -906,7 +948,9 @@ img { max-width: 100%; display: block; }
 
 /* ── Responsive for new elements ── */
 @media (max-width: 640px) {
-  .site-logo { max-height: 55px; }
+  .sticky-header { height: 56px; padding: 0 12px; }
+  .sticky-logo-img { height: 40px; max-width: 180px; }
   .side-menu { width: 260px; }
   .deal-count-badge { display: none; }
+  .search-bar-wrap { padding: 8px 12px; }
 }
