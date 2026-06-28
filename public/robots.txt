@@ -1,4 +1,15 @@
 User-agent: *
 Allow: /
 
+# Block internal/utility paths
+Disallow: /api/
+Disallow: /_next/
+
+# Allow important assets
+Allow: /_next/static/
+Allow: /icon-192.png
+Allow: /icon-512.png
+Allow: /favicon.ico
+
+# Sitemap
 Sitemap: https://www.whileushop.com/sitemap.xml
