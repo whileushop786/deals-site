@@ -67,12 +67,12 @@ img { max-width: 100%; display: block; }
   display: flex;
   align-items: center;
   justify-content: center;
-  max-width: 300px;
+  max-width: 400px;
   margin: 0 auto;
 }
 
 .header-amazon-img {
-  height: 58px;
+  height: 62px;
   width: auto;
   max-width: 100%;
   object-fit: contain;
@@ -884,8 +884,8 @@ img { max-width: 100%; display: block; }
 @media (max-width: 640px) {
   .sticky-header { height: 68px; padding: 0 10px; gap: 8px; }
   .sticky-logo-img { height: 44px; max-width: 130px; }
-  .header-amazon-img { height: 42px; }
-  .header-amazon-link { max-width: 140px; }
+  .header-amazon-img { height: 46px; }
+  .header-amazon-link { max-width: 200px; }
   .side-menu { width: 260px; }
   .deal-count-badge { display: none; }
   .search-bar-wrap { padding: 8px 12px; }
