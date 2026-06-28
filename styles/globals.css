@@ -230,7 +230,7 @@ img { max-width: 100%; display: block; }
 
 /* ── Deal Card (stays dark) ── */
 .deal-card {
-  background: #ffffff;
+  background: #f9f9f9;
   border: 1px solid #e5e5e5;
   border-radius: var(--radius);
   overflow: hidden;
@@ -339,7 +339,7 @@ img { max-width: 100%; display: block; }
   display: flex;
   align-items: center;
   gap: 6px;
-  background: #fff7f0;
+  background: #fff3e8;
   border: 1px dashed rgba(255,107,0,0.5);
   border-radius: var(--radius-sm);
   padding: 6px 8px;
@@ -401,7 +401,7 @@ img { max-width: 100%; display: block; }
 .more-details-btn {
   display: block;
   width: 100%;
-  background: #fff7f0;
+  background: #fff3e8;
   border: 1px solid rgba(255,107,0,0.3);
   border-radius: var(--radius-sm);
   color: var(--accent);
