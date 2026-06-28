@@ -23,7 +23,6 @@ function getShopLabel(platform) {
 
 export default function DealCard({ deal }) {
   const [copied, setCopied] = useState(false);
-  const [linkCopied, setLinkCopied] = useState(false);
   const [imgError, setImgError] = useState(false);
 
   const {
@@ -44,7 +43,6 @@ export default function DealCard({ deal }) {
       : null);
 
   const slug = slugify(title);
-  const dealUrl = `${SITE_URL}/${slug}`;
   const fallbackImage = 'https://via.placeholder.com/300x300?text=No+Image';
 
   const handleCopy = (e) => {
@@ -53,15 +51,6 @@ export default function DealCard({ deal }) {
     navigator.clipboard.writeText(coupon_code).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    });
-  };
-
-  const handleShareLink = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    navigator.clipboard.writeText(dealUrl).then(() => {
-      setLinkCopied(true);
-      setTimeout(() => setLinkCopied(false), 2000);
     });
   };
 
@@ -112,19 +101,9 @@ export default function DealCard({ deal }) {
             {getShopLabel(platform)}
           </a>
 
-          {/* More Details link → product page */}
           <Link href={`/${slug}`} className="more-details-btn">
             More Details →
           </Link>
-
-          {/* Copy shareable link */}
-          <button
-            className={`share-link-btn ${linkCopied ? 'copied' : ''}`}
-            onClick={handleShareLink}
-            title="Copy link to share on Instagram"
-          >
-            {linkCopied ? '✓ Link Copied!' : '🔗 Copy Link'}
-          </button>
         </div>
       </div>
     </div>
