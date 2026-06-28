@@ -1,9 +1,30 @@
 import { useState } from 'react';
+import Link from 'next/link';
+import { slugify } from '../lib/slugify';
+
+const SITE_URL = 'https://www.whileushop.com';
+
+// Converts platform value to button label
+function getShopLabel(platform) {
+  const map = {
+    amazon:   '🛒 Shop on Amazon',
+    walmart:  '🛒 Shop on Walmart',
+    target:   '🛒 Shop on Target',
+    ebay:     '🛒 Shop on eBay',
+    bestbuy:  '🛒 Shop on Best Buy',
+    costco:   '🛒 Shop on Costco',
+    flipkart: '🛒 Shop on Flipkart',
+    meesho:   '🛒 Shop on Meesho',
+    etsy:     '🛒 Shop on Etsy',
+  };
+  const key = (platform || 'amazon').toLowerCase().replace(/\s+/g, '');
+  return map[key] || `🛒 Shop on ${platform}`;
+}
 
 export default function DealCard({ deal }) {
   const [copied, setCopied] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
   const [imgError, setImgError] = useState(false);
-  const [detailsOpen, setDetailsOpen] = useState(false);
 
   const {
     title,
@@ -14,7 +35,6 @@ export default function DealCard({ deal }) {
     coupon_code,
     affiliate_link,
     platform = 'amazon',
-    description,
   } = deal;
 
   const discount =
@@ -22,6 +42,10 @@ export default function DealCard({ deal }) {
     (original_price && sale_price
       ? Math.round(((original_price - sale_price) / original_price) * 100)
       : null);
+
+  const slug = slugify(title);
+  const dealUrl = `${SITE_URL}/${slug}`;
+  const fallbackImage = 'https://via.placeholder.com/300x300?text=No+Image';
 
   const handleCopy = (e) => {
     e.preventDefault();
@@ -32,17 +56,19 @@ export default function DealCard({ deal }) {
     });
   };
 
-  const handleToggleDetails = (e) => {
+  const handleShareLink = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    setDetailsOpen((prev) => !prev);
+    navigator.clipboard.writeText(dealUrl).then(() => {
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
+    });
   };
-
-  const fallbackImage = 'https://via.placeholder.com/300x300?text=No+Image';
 
   return (
     <div className="deal-card">
-      <a href={affiliate_link} target="_blank" rel="noopener noreferrer sponsored">
+      {/* Image + Title → goes to product page */}
+      <Link href={`/${slug}`}>
         <div className="card-image-wrap">
           <img
             src={imgError ? fallbackImage : (image_url || fallbackImage)}
@@ -53,54 +79,54 @@ export default function DealCard({ deal }) {
           {discount && <div className="discount-badge">-{discount}%</div>}
           <div className="platform-badge">{platform}</div>
         </div>
-
         <div className="card-body">
           <p className="card-title">{title}</p>
-
           <div className="card-prices">
-            <span className="price-sale">
-              ${Number(sale_price).toFixed(2)}
-            </span>
+            <span className="price-sale">${Number(sale_price).toFixed(2)}</span>
             {original_price && (
-              <span className="price-original">
-                ${Number(original_price).toFixed(2)}
-              </span>
+              <span className="price-original">${Number(original_price).toFixed(2)}</span>
             )}
           </div>
-
-          {coupon_code && (
-            <div className="coupon-box" onClick={(e) => e.preventDefault()}>
-              <span className="coupon-label">Code</span>
-              <span className="coupon-code">{coupon_code}</span>
-              <button
-                className={`copy-btn ${copied ? 'copied' : ''}`}
-                onClick={handleCopy}
-              >
-                {copied ? '✓ Copied' : 'Copy'}
-              </button>
-            </div>
-          )}
-
-          {/* Product Details Toggle — only shows if description exists */}
-          {description && (
-            <div className="details-wrap" onClick={handleToggleDetails}>
-              <button className="details-toggle-btn">
-                <span>Product Details</span>
-                <span className={`details-arrow ${detailsOpen ? 'open' : ''}`}>▼</span>
-              </button>
-              {detailsOpen && (
-                <div className="details-content">
-                  {description}
-                </div>
-              )}
-            </div>
-          )}
-
-          <div className="card-footer">
-            <span className="shop-btn">Shop on Amazon →</span>
-          </div>
         </div>
-      </a>
+      </Link>
+
+      {/* Interactive section */}
+      <div className="card-interactive">
+        {coupon_code && (
+          <div className="coupon-box">
+            <span className="coupon-label">Code</span>
+            <span className="coupon-code">{coupon_code}</span>
+            <button className={`copy-btn ${copied ? 'copied' : ''}`} onClick={handleCopy}>
+              {copied ? '✓ Copied' : 'Copy'}
+            </button>
+          </div>
+        )}
+
+        <div className="card-actions">
+          <a
+            href={affiliate_link}
+            target="_blank"
+            rel="noopener noreferrer sponsored"
+            className="shop-btn"
+          >
+            {getShopLabel(platform)}
+          </a>
+
+          {/* More Details link → product page */}
+          <Link href={`/${slug}`} className="more-details-btn">
+            More Details →
+          </Link>
+
+          {/* Copy shareable link */}
+          <button
+            className={`share-link-btn ${linkCopied ? 'copied' : ''}`}
+            onClick={handleShareLink}
+            title="Copy link to share on Instagram"
+          >
+            {linkCopied ? '✓ Link Copied!' : '🔗 Copy Link'}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

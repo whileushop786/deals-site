@@ -2,11 +2,11 @@ import { useState } from 'react';
 import Link from 'next/link';
 
 const SOCIAL_LINKS = [
-  { name: 'Telegram',  href: 'https://t.me/whileushop',                             top: '0%',   height: '20%' },
-  { name: 'Facebook',  href: 'https://www.facebook.com/whileushop786',               top: '20%',  height: '20%' },
-  { name: 'Instagram', href: 'https://instagram.com/crazydealshunter',               top: '40%',  height: '20%' },
-  { name: 'WhatsApp',  href: 'https://chat.whatsapp.com/Ei6fHrUYhyx5GZTHBF5IFF',    top: '60%',  height: '20%' },
-  { name: 'YouTube',   href: 'https://www.youtube.com/@SnagItUSA',                   top: '80%',  height: '20%' },
+  { name: 'Telegram',  href: 'https://t.me/whileushop',                          top: '9.0%',  height: '18.2%' },
+  { name: 'Facebook',  href: 'https://www.facebook.com/whileushop786',            top: '27.2%', height: '18.2%' },
+  { name: 'Instagram', href: 'https://instagram.com/crazydealshunter',            top: '45.4%', height: '18.2%' },
+  { name: 'WhatsApp',  href: 'https://chat.whatsapp.com/Ei6fHrUYhyx5GZTHBF5IFF', top: '63.6%', height: '18.2%' },
+  { name: 'YouTube',   href: 'https://www.youtube.com/@SnagItUSA',                top: '81.8%', height: '18.2%' },
 ];
 
 export default function Header({ search, onSearch, totalCount }) {
@@ -14,11 +14,25 @@ export default function Header({ search, onSearch, totalCount }) {
 
   return (
     <>
-      {/* ── Sticky Top Bar: Logo left + Menu right ── */}
+      {/* ── Sticky Top Bar: Logo left + Amazon banner center + Menu right ── */}
       <header className="sticky-header">
         <Link href="/" className="sticky-logo">
           <img src="/logo.png" alt="WhileUShop.com" className="sticky-logo-img" />
         </Link>
+
+        {/* Amazon Storefront banner — center of header */}
+        <a
+          href="https://www.amazon.com/shop/whileushop"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="header-amazon-link"
+        >
+          <img
+            src="/amazon-storefront.png"
+            alt="Shop our Amazon Storefront"
+            className="header-amazon-img"
+          />
+        </a>
 
         <div className="sticky-right">
           <button
@@ -37,9 +51,7 @@ export default function Header({ search, onSearch, totalCount }) {
           src="/social-media.png"
           alt="Join our social channels"
           className="social-banner-img"
-          useMap="#social-map"
         />
-        {/* Overlay clickable zones using absolute positioned links */}
         {SOCIAL_LINKS.map((s) => (
           <a
             key={s.name}
@@ -49,23 +61,12 @@ export default function Header({ search, onSearch, totalCount }) {
             className="social-zone"
             style={{ top: s.top, height: s.height }}
             aria-label={`Join our ${s.name} channel`}
-            title={s.name}
+            title={`Join ${s.name}`}
           />
         ))}
       </div>
 
-      {/* ── Amazon Storefront Banner ── */}
-      <div className="amazon-banner">
-        <a href="https://www.amazon.com/shop/whileushop" target="_blank" rel="noopener noreferrer">
-          <img
-            src="/amazon-storefront.png"
-            alt="Shop our Amazon Storefront — Hand-picked deals and top recommendations"
-            className="amazon-banner-img"
-          />
-        </a>
-      </div>
-
-      {/* ── Search Bar below banners ── */}
+      {/* ── Search Bar ── */}
       <div className="search-bar-wrap">
         <div className="search-bar-inner">
           <div className="search-wrap">
