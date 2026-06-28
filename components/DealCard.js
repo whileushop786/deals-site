@@ -4,7 +4,6 @@ import { slugify } from '../lib/slugify';
 
 const SITE_URL = 'https://www.whileushop.com';
 
-// Converts platform value to button label
 function getShopLabel(platform) {
   const map = {
     amazon:   '🛒 Shop on Amazon',
@@ -56,8 +55,8 @@ export default function DealCard({ deal }) {
 
   return (
     <div className="deal-card">
-      {/* Image + Title → goes to product page */}
       <Link href={`/${slug}`}>
+        {/* Image — no padding, fills full width */}
         <div className="card-image-wrap">
           <img
             src={imgError ? fallbackImage : (image_url || fallbackImage)}
@@ -65,21 +64,25 @@ export default function DealCard({ deal }) {
             onError={() => setImgError(true)}
             loading="lazy"
           />
-          {discount && <div className="discount-badge">-{discount}%</div>}
-          <div className="platform-badge">{platform}</div>
+          {/* NO platform badge — removed */}
         </div>
+
         <div className="card-body">
           <p className="card-title">{title}</p>
+
+          {/* Price row — discount badge inline on the right */}
           <div className="card-prices">
             <span className="price-sale">${Number(sale_price).toFixed(2)}</span>
             {original_price && (
               <span className="price-original">${Number(original_price).toFixed(2)}</span>
             )}
+            {discount && (
+              <span className="discount-inline">-{discount}%</span>
+            )}
           </div>
         </div>
       </Link>
 
-      {/* Interactive section */}
       <div className="card-interactive">
         {coupon_code && (
           <div className="coupon-box">
@@ -100,7 +103,6 @@ export default function DealCard({ deal }) {
           >
             {getShopLabel(platform)}
           </a>
-
           <Link href={`/${slug}`} className="more-details-btn">
             More Details →
           </Link>
