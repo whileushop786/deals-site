@@ -9,14 +9,17 @@ export default function Privacy() {
     <>
       <Head>
         <title>Privacy Policy — WhileUShop.com</title>
-        <meta name="description" content="Read the Privacy Policy of WhileUShop.com. Learn how we collect, use and protect your information when you visit our Amazon deals website." />
-        <meta name="keywords" content="WhileUShop privacy policy, deals site privacy, data protection, amazon affiliate privacy" />
+        <meta name="description" content="Read the Privacy Policy of WhileUShop.com. Learn how we collect, use and protect your information when you visit our online deals and coupons website." />
+        <meta name="keywords" content="WhileUShop privacy policy, deals site privacy, data protection, affiliate program privacy, online shopping privacy, cookie policy" />
+        <meta name="robots" content="noindex, follow" />
+        <meta name="author" content="WhileUShop.com" />
+        <meta property="og:type" content="website" />
         <meta property="og:title" content="Privacy Policy — WhileUShop.com" />
-        <meta property="og:description" content="Read the Privacy Policy of WhileUShop.com — your trusted Amazon deals website." />
+        <meta property="og:description" content="Read the Privacy Policy of WhileUShop.com — your trusted online deals website." />
         <meta property="og:url" content={`${SITE_URL}/privacy`} />
         <meta property="og:image" content={`${SITE_URL}/icon-512.png`} />
+        <meta property="og:site_name" content="WhileUShop.com" />
         <link rel="canonical" href={`${SITE_URL}/privacy`} />
-        <meta name="robots" content="noindex, follow" />
       </Head>
 
       <Header search="" onSearch={() => {}} totalCount={0} />
@@ -31,14 +34,12 @@ export default function Privacy() {
           <div className="static-content">
             <div className="static-card">
               <h2>1. Introduction</h2>
-              <p>Welcome to <strong>WhileUShop.com</strong>. We respect your privacy and are committed to protecting any personal information you share with us. This Privacy Policy explains what information we collect, how we use it, and your rights regarding your data.</p>
-              <p>By using our website, you agree to the terms of this Privacy Policy.</p>
+              <p>Welcome to <strong>WhileUShop.com</strong>. We respect your privacy and are committed to protecting any personal information you share with us. This Privacy Policy explains what information we collect, how we use it, and your rights regarding your data. By using our website, you agree to the terms of this Privacy Policy.</p>
             </div>
 
             <div className="static-card">
               <h2>2. Information We Collect</h2>
-              <p>WhileUShop.com is primarily a deals listing website. We do <strong>not</strong> require you to create an account or submit any personal information to browse deals.</p>
-              <p>However, we may collect the following non-personal information automatically:</p>
+              <p>WhileUShop.com is primarily a deals listing website. We do <strong>not</strong> require you to create an account or submit any personal information to browse deals. However, we may collect the following non-personal information automatically:</p>
               <ul className="static-list">
                 <li>Browser type and version</li>
                 <li>Pages visited and time spent on each page</li>
@@ -60,19 +61,12 @@ export default function Privacy() {
 
             <div className="static-card">
               <h2>4. Affiliate Links & Third-Party Sites</h2>
-              <p>WhileUShop.com contains affiliate links to Amazon and other third-party websites. When you click these links and make a purchase, we may earn a small commission at no extra cost to you.</p>
-              <p>We are a participant in the <strong>Amazon Associates Program</strong>, an affiliate advertising program designed to provide a means for sites to earn advertising fees by advertising and linking to Amazon.</p>
+              <p>WhileUShop.com contains affiliate links to Amazon and other retailers. When you click these links and make a purchase, we may earn a small commission at no extra cost to you. We are a participant in the <strong>Amazon Associates Program</strong> and other affiliate programs. Third-party sites have their own privacy policies — we encourage you to review them.</p>
             </div>
 
             <div className="static-card">
               <h2>5. How We Use Information</h2>
-              <p>Any information we collect is used solely for:</p>
-              <ul className="static-list">
-                <li>Improving our website's performance and content</li>
-                <li>Understanding our audience to show more relevant deals</li>
-                <li>Analyzing traffic patterns to improve user experience</li>
-              </ul>
-              <p>We <strong>never</strong> sell, rent, or trade your information to third parties.</p>
+              <p>Any information we collect is used solely for improving our website's performance, understanding our audience, and analyzing traffic. We <strong>never</strong> sell, rent, or trade your information to third parties.</p>
             </div>
 
             <div className="static-card">
@@ -82,14 +76,14 @@ export default function Privacy() {
 
             <div className="static-card">
               <h2>7. Changes to This Policy</h2>
-              <p>We may update this Privacy Policy from time to time. Any changes will be posted on this page with an updated revision date.</p>
+              <p>We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated revision date.</p>
             </div>
 
             <div className="static-card">
               <h2>8. Contact Us</h2>
-              <p>If you have any questions about this Privacy Policy, please contact us at:</p>
+              <p>If you have any questions about this Privacy Policy, contact us at:</p>
               <a href="mailto:privacy@whileushop.com" className="contact-link">privacy@whileushop.com</a>
-              <p style={{marginTop: '12px'}}>Or visit our <Link href="/contact" className="inline-link">Contact Us</Link> page.</p>
+              <p style={{marginTop:'12px'}}>Or visit our <Link href="/contact" className="inline-link">Contact Us</Link> page.</p>
             </div>
           </div>
 

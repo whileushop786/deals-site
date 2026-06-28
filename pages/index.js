@@ -6,9 +6,9 @@ import DealCard from '../components/DealCard';
 import { SkeletonGrid } from '../components/SkeletonCard';
 import Header from '../components/Header';
 
-const SITE_NAME = "WhileUShop.com — Best Amazon Deals, Coupons & Freebies";
-const SITE_DESC = "Find the best Amazon deals, coupon codes, discounts and freebies updated daily. Save more and shop smart with WhileUShop.com.";
-const SITE_KEYWORDS = "amazon deals, coupon codes, amazon coupons, best deals today, discount codes, freebies, promo codes, amazon discounts, deals of the day, online shopping deals, WhileUShop";
+const SITE_NAME = "WhileUShop.com — Best Online Deals, Coupons & Promo Codes";
+const SITE_DESC = "Save more with handpicked deals, verified coupon codes, promo offers, and exclusive discounts from top U.S. online stores — updated daily so you never miss a great deal.";
+const SITE_KEYWORDS = "best online deals today, coupon codes, promo codes, discount codes, freebies, online shopping deals, verified coupons, exclusive discounts, WhileUShop, deals and coupons, save money online, daily deals";
 const SITE_URL = "https://www.whileushop.com";
 
 function groupByDate(deals) {
@@ -106,19 +106,56 @@ export default function Home() {
     }
   };
 
+  // JSON-LD for homepage — WebSite + SearchAction (enables Google Sitelinks Search)
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'WhileUShop.com',
+    url: SITE_URL,
+    description: SITE_DESC,
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${SITE_URL}/?q={search_term_string}`,
+      },
+      'query-input': 'required name=search_term_string',
+    },
+  };
+
+  // JSON-LD Organization schema
+  const orgSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'WhileUShop.com',
+    url: SITE_URL,
+    logo: `${SITE_URL}/icon-512.png`,
+    sameAs: [
+      'https://t.me/whileushop',
+      'https://www.facebook.com/whileushop786',
+      'https://instagram.com/crazydealshunter',
+      'https://www.youtube.com/@SnagItUSA',
+    ],
+  };
+
   return (
     <>
       <Head>
         <title>{SITE_NAME}</title>
         <meta name="description" content={SITE_DESC} />
         <meta name="keywords" content={SITE_KEYWORDS} />
+        <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+        <meta name="author" content="WhileUShop.com" />
 
-        {/* Open Graph / Facebook */}
+        {/* Open Graph */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content={SITE_URL} />
         <meta property="og:title" content={SITE_NAME} />
         <meta property="og:description" content={SITE_DESC} />
         <meta property="og:image" content={`${SITE_URL}/icon-512.png`} />
+        <meta property="og:image:width" content="512" />
+        <meta property="og:image:height" content="512" />
+        <meta property="og:image:alt" content="WhileUShop.com — Best Online Deals" />
         <meta property="og:site_name" content="WhileUShop.com" />
         <meta property="og:locale" content="en_US" />
 
@@ -128,16 +165,20 @@ export default function Home() {
         <meta name="twitter:title" content={SITE_NAME} />
         <meta name="twitter:description" content={SITE_DESC} />
         <meta name="twitter:image" content={`${SITE_URL}/icon-512.png`} />
+        <meta name="twitter:image:alt" content="WhileUShop.com" />
 
-        {/* Canonical */}
         <link rel="canonical" href={SITE_URL} />
+
+        {/* JSON-LD Structured Data */}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }} />
       </Head>
 
       <Header search={search} onSearch={handleSearch} totalCount={totalCount} />
 
       <section className="hero">
-        <h1>Best Amazon<br /><em>Deals Today</em></h1>
-        <p className="hero-sub">Fresh Amazon deals, coupon codes &amp; discounts — updated daily.</p>
+        <h1>Best Online Deals, Coupons &amp; Promo Codes</h1>
+        <p className="hero-sub">Save more with handpicked deals, verified coupon codes, promo offers, and exclusive discounts from top U.S. online stores — updated daily so you never miss a great deal.</p>
       </section>
 
       <main className="container" style={{ paddingTop: 8, paddingBottom: 40 }}>
