@@ -1104,17 +1104,19 @@ img { max-width: 100%; display: block; }
   font-size: 12px;
   font-weight: 600;
   padding: 0 6px;
-  text-decoration: none;
   white-space: nowrap;
-  transition: opacity 0.15s;
   letter-spacing: 0.01em;
 }
 
-.ticker-item:hover {
-  opacity: 0.85;
+.ticker-item a {
+  color: #fff;
+  font-weight: 700;
   text-decoration: underline;
   text-underline-offset: 2px;
+  transition: opacity 0.15s;
 }
+
+.ticker-item a:hover { opacity: 0.8; }
 
 .ticker-sep {
   margin: 0 16px;
