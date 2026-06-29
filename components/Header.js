@@ -74,7 +74,7 @@ export default function Header({ search, onSearch, totalCount }) {
             <input
               type="text"
               className="search-input"
-              placeholder="Search deals..."
+              placeholder="Looking for something?"
               value={search}
               onChange={onSearch}
             />
