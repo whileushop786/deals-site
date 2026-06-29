@@ -11,58 +11,39 @@ const SOCIAL_LINKS = [
 
 export default function Header({ search, onSearch, totalCount }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [shopOpen, setShopOpen] = useState(false);
+
+  const closeAll = () => {
+    setMenuOpen(false);
+    setShopOpen(false);
+  };
 
   return (
     <>
-      {/* ── Sticky Top Bar: Logo left + Amazon banner center + Menu right ── */}
+      {/* ── Sticky Header ── */}
       <header className="sticky-header">
         <Link href="/" className="sticky-logo">
           <img src="/logo.png" alt="WhileUShop.com" className="sticky-logo-img" />
         </Link>
 
-        {/* Amazon Storefront banner — center of header */}
-        <a
-          href="https://www.amazon.com/shop/whileushop"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="header-amazon-link"
-        >
-          <img
-            src="/amazon-storefront.png"
-            alt="Shop our Amazon Storefront"
-            className="header-amazon-img"
-          />
+        <a href="https://www.amazon.com/shop/whileushop" target="_blank" rel="noopener noreferrer" className="header-amazon-link">
+          <img src="/amazon-storefront.png" alt="Shop our Amazon Storefront" className="header-amazon-img" />
         </a>
 
         <div className="sticky-right">
-          <button
-            className="menu-btn"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Open menu"
-          >
+          <button className="menu-btn" onClick={() => setMenuOpen(!menuOpen)} aria-label="Open menu">
             {menuOpen ? '✕' : '☰'}
           </button>
         </div>
       </header>
 
-      {/* ── Social Media Banner with clickable zones ── */}
+      {/* ── Social Media Banner ── */}
       <div className="social-banner">
-        <img
-          src="/social-media.png"
-          alt="Join our social channels"
-          className="social-banner-img"
-        />
+        <img src="/social-media.png" alt="Join our social channels" className="social-banner-img" />
         {SOCIAL_LINKS.map((s) => (
-          <a
-            key={s.name}
-            href={s.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="social-zone"
-            style={{ top: s.top, height: s.height }}
-            aria-label={`Join our ${s.name} channel`}
-            title={`Join ${s.name}`}
-          />
+          <a key={s.name} href={s.href} target="_blank" rel="noopener noreferrer"
+            className="social-zone" style={{ top: s.top, height: s.height }}
+            aria-label={`Join our ${s.name} channel`} title={`Join ${s.name}`} />
         ))}
       </div>
 
@@ -71,13 +52,8 @@ export default function Header({ search, onSearch, totalCount }) {
         <div className="search-bar-inner">
           <div className="search-wrap">
             <span className="search-icon">🔍</span>
-            <input
-              type="text"
-              className="search-input"
-              placeholder="Looking for something?"
-              value={search}
-              onChange={onSearch}
-            />
+            <input type="text" className="search-input" placeholder="Looking for something?"
+              value={search} onChange={onSearch} />
           </div>
           <div className="deal-count-badge">
             <strong>{totalCount}</strong> active deals
@@ -85,21 +61,67 @@ export default function Header({ search, onSearch, totalCount }) {
         </div>
       </div>
 
-      {/* ── Slide-in Side Menu ── */}
+      {/* ── Side Menu ── */}
       {menuOpen && (
         <>
-          <div className="menu-overlay" onClick={() => setMenuOpen(false)} />
+          <div className="menu-overlay" onClick={closeAll} />
           <nav className="side-menu">
             <div className="side-menu-header">
               <span className="side-menu-title">Menu</span>
-              <button className="side-menu-close" onClick={() => setMenuOpen(false)}>✕</button>
+              <button className="side-menu-close" onClick={closeAll}>✕</button>
             </div>
+
             <ul className="side-menu-links">
-              <li><Link href="/" onClick={() => setMenuOpen(false)}>🏠 Home</Link></li>
-              <li><Link href="/about" onClick={() => setMenuOpen(false)}>👋 About Us</Link></li>
-              <li><Link href="/contact" onClick={() => setMenuOpen(false)}>📩 Contact Us</Link></li>
-              <li><Link href="/privacy" onClick={() => setMenuOpen(false)}>🔒 Privacy Policy</Link></li>
+              <li>
+                <Link href="/" onClick={closeAll}>🏠 Home</Link>
+              </li>
+
+              {/* Shop & Save with submenu */}
+              <li className="has-submenu">
+                <button
+                  className="submenu-trigger"
+                  onClick={() => setShopOpen(!shopOpen)}
+                >
+                  <span>🛍️ Shop &amp; Save</span>
+                  <span className={`submenu-arrow ${shopOpen ? 'open' : ''}`}>›</span>
+                </button>
+                {shopOpen && (
+                  <ul className="submenu">
+                    <li>
+                      <Link href="/walmart-savings" onClick={closeAll}>
+                        🛒 Walmart Savings
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/wayfair-home" onClick={closeAll}>
+                        🛋️ Wayfair Home
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/michael-kors-outlet" onClick={closeAll}>
+                        👜 Michael Kors Outlet
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/freebies" onClick={closeAll}>
+                        🎁 Freebies
+                      </Link>
+                    </li>
+                  </ul>
+                )}
+              </li>
+
+              <li>
+                <Link href="/about" onClick={closeAll}>👋 About Us</Link>
+              </li>
+              <li>
+                <Link href="/contact" onClick={closeAll}>📩 Contact Us</Link>
+              </li>
+              <li>
+                <Link href="/privacy" onClick={closeAll}>🔒 Privacy Policy</Link>
+              </li>
             </ul>
+
             <div className="side-menu-footer">
               © {new Date().getFullYear()} WhileUShop.com
             </div>
