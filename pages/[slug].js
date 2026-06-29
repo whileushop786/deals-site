@@ -164,7 +164,7 @@ export default function DealPage({ deal, structuredData }) {
                 className="deal-page-image"
                 onError={() => setImgError(true)}
               />
-              {discount && <div className="deal-page-disc-badge">-{discount}% OFF</div>}
+              {/* Discount badge removed from image — shown next to price below */}
             </div>
 
             <div className="deal-page-details">
@@ -175,6 +175,9 @@ export default function DealPage({ deal, structuredData }) {
                 <span className="deal-page-sale">${Number(sale_price).toFixed(2)}</span>
                 {original_price && (
                   <span className="deal-page-orig">${Number(original_price).toFixed(2)}</span>
+                )}
+                {discount && (
+                  <span className="deal-page-disc-pill">-{discount}% OFF</span>
                 )}
                 {savings && (
                   <span className="deal-page-savings">You save ${savings}!</span>
