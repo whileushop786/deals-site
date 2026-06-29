@@ -220,6 +220,11 @@ export default function DealPage({ deal, structuredData }) {
               </p>
             </div>
           </div>
+
+          {/* Back to deals button at bottom */}
+          <div className="static-back" style={{ marginTop: 28 }}>
+            <Link href="/" className="back-btn">← Back to All Deals</Link>
+          </div>
         </div>
       </main>
 
