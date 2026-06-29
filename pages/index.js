@@ -5,6 +5,8 @@ import { getDeals, getTotalCount } from '../lib/supabase';
 import DealCard from '../components/DealCard';
 import { SkeletonGrid } from '../components/SkeletonCard';
 import Header from '../components/Header';
+import EmailPopup from '../components/EmailPopup';
+import Ticker from '../components/Ticker';
 
 const SITE_NAME = "WhileUShop.com — Best Online Deals, Coupons & Promo Codes";
 const SITE_DESC = "Save more with handpicked deals, verified coupon codes, promo offers, and exclusive discounts from top U.S. online stores — updated daily so you never miss a great deal.";
@@ -175,11 +177,14 @@ export default function Home() {
       </Head>
 
       <Header search={search} onSearch={handleSearch} totalCount={totalCount} />
+      <EmailPopup />
 
       <section className="hero">
         <h1>Best Online Deals, Coupons &amp; Promo Codes</h1>
         <p className="hero-sub">Save more with handpicked deals, verified coupon codes, promo offers, and exclusive discounts from top U.S. online stores — updated daily so you never miss a great deal.</p>
       </section>
+
+      <Ticker />
 
       <main className="container" style={{ paddingTop: 8, paddingBottom: 40 }}>
         {loading ? (
