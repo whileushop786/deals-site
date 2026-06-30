@@ -7,6 +7,7 @@ import { SkeletonGrid } from '../components/SkeletonCard';
 import Header from '../components/Header';
 import EmailPopup from '../components/EmailPopup';
 import Ticker from '../components/Ticker';
+import AdBanner from '../components/AdBanner';
 
 const SITE_NAME = "WhileUShop.com — Best Online Deals, Coupons & Promo Codes";
 const SITE_DESC = "Save more with handpicked deals, verified coupon codes, promo offers, and exclusive discounts from top U.S. online stores — updated daily so you never miss a great deal.";
@@ -236,6 +237,8 @@ export default function Home() {
         <p>As an Amazon Associate, we earn from qualifying purchases. Prices and availability are subject to change.</p>
         <p>© {new Date().getFullYear()} <a href={SITE_URL}>WhileUShop.com</a> — All rights reserved.</p>
       </footer>
+
+      <AdBanner />
     </>
   );
 }
