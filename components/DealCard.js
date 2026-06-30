@@ -6,18 +6,28 @@ const SITE_URL = 'https://www.whileushop.com';
 
 function getShopLabel(platform) {
   const map = {
-    amazon:   '🛒 Shop on Amazon',
-    walmart:  '🛒 Shop on Walmart',
-    target:   '🛒 Shop on Target',
-    ebay:     '🛒 Shop on eBay',
-    bestbuy:  '🛒 Shop on Best Buy',
-    costco:   '🛒 Shop on Costco',
-    flipkart: '🛒 Shop on Flipkart',
-    meesho:   '🛒 Shop on Meesho',
-    etsy:     '🛒 Shop on Etsy',
+    amazon:   'Shop on Amazon',
+    walmart:  'Shop on Walmart',
+    target:   'Shop on Target',
+    ebay:     'Shop on eBay',
+    bestbuy:  'Shop on Best Buy',
+    costco:   'Shop on Costco',
+    flipkart: 'Shop on Flipkart',
+    meesho:   'Shop on Meesho',
+    etsy:     'Shop on Etsy',
   };
   const key = (platform || 'amazon').toLowerCase().replace(/\s+/g, '');
-  return map[key] || `🛒 Shop on ${platform}`;
+  return map[key] || `Shop on ${platform}`;
+}
+
+function CartIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+      <circle cx="9" cy="21" r="1"></circle>
+      <circle cx="20" cy="21" r="1"></circle>
+      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+    </svg>
+  );
 }
 
 export default function DealCard({ deal }) {
@@ -101,7 +111,7 @@ export default function DealCard({ deal }) {
             rel="noopener noreferrer sponsored"
             className="shop-btn"
           >
-            {getShopLabel(platform)}
+            <CartIcon /> {getShopLabel(platform)}
           </a>
           <Link href={`/${slug}`} className="more-details-btn">
             More Details →
