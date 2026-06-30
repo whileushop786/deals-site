@@ -87,7 +87,7 @@ export default function DealCard({ deal }) {
               <span className="price-original">${Number(original_price).toFixed(2)}</span>
             )}
             {discount && (
-              <span className="discount-inline">-{discount}%</span>
+              <span className="discount-inline">{discount}%</span>
             )}
           </div>
         </div>

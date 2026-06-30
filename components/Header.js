@@ -58,7 +58,7 @@ export default function Header({ search, onSearch, totalCount }) {
           <img src="/logo.png" alt="WhileUShop.com" className="sticky-logo-img" />
         </Link>
 
-        <a href="https://www.amazon.com/shop/whileushop" target="_blank" rel="noopener noreferrer" className="header-amazon-link">
+        <a href="https://www.amazon.com/shop/caramc" target="_blank" rel="noopener noreferrer" className="header-amazon-link">
           <img src="/amazon-storefront.png" alt="Shop our Amazon Storefront" className="header-amazon-img" />
         </a>
 
@@ -144,6 +144,9 @@ export default function Header({ search, onSearch, totalCount }) {
               </li>
 
               <li>
+                <Link href="/freebies-library" onClick={closeAll}>📚 Freebies Library</Link>
+              </li>
+              <li>
                 <Link href="/about" onClick={closeAll}>👋 About Us</Link>
               </li>
               <li>
@@ -162,7 +165,8 @@ export default function Header({ search, onSearch, totalCount }) {
                 </div>
               ) : (
                 <>
-                  <p className="menu-subscribe-title">🔥 Get Daily Deals</p>
+                  <p className="menu-subscribe-title">🔥 Never Miss a Deal!</p>
+                  <p className="menu-subscribe-sub">Handpicked deals &amp; verified coupons, daily.</p>
                   <form onSubmit={handleMenuSubscribe} className="menu-subscribe-form">
                     <input
                       type="email"
