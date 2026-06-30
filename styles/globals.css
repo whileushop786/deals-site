@@ -1536,3 +1536,67 @@ img { max-width: 100%; display: block; }
   .admin-stat-card { padding: 12px; }
   .admin-stat-num { font-size: 22px; }
 }
+
+/* ── Menu Compact Subscribe Form ── */
+.menu-subscribe {
+  padding: 16px 24px;
+  border-top: 1px solid #e5e5e5;
+  background: #fff7f0;
+}
+
+.menu-subscribe-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #ff6b00;
+  margin-bottom: 8px;
+}
+
+.menu-subscribe-form {
+  display: flex;
+  gap: 6px;
+}
+
+.menu-subscribe-input {
+  flex: 1;
+  min-width: 0;
+  background: #fff;
+  border: 1.5px solid #e0c5a8;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+  color: #1a1a1a;
+  outline: none;
+}
+
+.menu-subscribe-input::placeholder { color: #bbb; }
+.menu-subscribe-input:focus { border-color: #ff6b00; }
+
+.menu-subscribe-btn {
+  background: #ff6b00;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 0 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.menu-subscribe-btn:hover { background: #ff8533; }
+.menu-subscribe-btn:disabled { background: #ffb380; cursor: not-allowed; }
+
+.menu-subscribe-error {
+  font-size: 10px;
+  color: #e53e3e;
+  margin-top: 6px;
+}
+
+.menu-subscribe-success {
+  font-size: 12px;
+  font-weight: 700;
+  color: #22c55e;
+  text-align: center;
+}
