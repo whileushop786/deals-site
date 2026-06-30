@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import Header from '../components/Header';
+import FooterSubscribe from '../components/FooterSubscribe';
 
 const SITE_URL = "https://www.whileushop.com";
 
@@ -106,6 +107,8 @@ export default function WalmartSavings() {
           </div>
         </div>
       </main>
+
+      <FooterSubscribe />
 
       <footer className="footer">
         <p>As an Amazon Associate and affiliate partner, we earn from qualifying purchases.</p>

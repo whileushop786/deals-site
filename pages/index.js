@@ -5,6 +5,7 @@ import { getDeals, getTotalCount } from '../lib/supabase';
 import DealCard from '../components/DealCard';
 import { SkeletonGrid } from '../components/SkeletonCard';
 import Header from '../components/Header';
+import FooterSubscribe from '../components/FooterSubscribe';
 import EmailPopup from '../components/EmailPopup';
 import Ticker from '../components/Ticker';
 import AdBanner from '../components/AdBanner';
@@ -76,6 +77,10 @@ export default function Home() {
   }, [query, fetchInitial]);
 
   useEffect(() => {
+    // Auto-load only the FIRST extra batch via scroll.
+    // After that, require manual "Load More" click.
+    if (page > 1) return; // only observe before first manual load
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMore && !loadingMore && !loading) {
@@ -87,6 +92,10 @@ export default function Home() {
     if (loaderRef.current) observer.observe(loaderRef.current);
     return () => observer.disconnect();
   }, [hasMore, loadingMore, loading, page, query, fetchMore]);
+
+  const handleLoadMoreClick = () => {
+    fetchMore(query, page);
+  };
 
   const handleSearch = (e) => {
     const val = e.target.value;
@@ -225,6 +234,13 @@ export default function Home() {
                   <span>Loading more deals...</span>
                 </div>
               )}
+              {!loadingMore && hasMore && page > 1 && (
+                <div className="load-more-btn-wrap">
+                  <button className="load-more-btn" onClick={handleLoadMoreClick}>
+                    Load More Deals ↓
+                  </button>
+                </div>
+              )}
               {!hasMore && deals.length > 0 && (
                 <div className="all-loaded">🎉 You have seen all {totalCount} deals!</div>
               )}
@@ -232,6 +248,8 @@ export default function Home() {
           </>
         )}
       </main>
+
+      <FooterSubscribe />
 
       <footer className="footer">
         <p>As an Amazon Associate, we earn from qualifying purchases. Prices and availability are subject to change.</p>

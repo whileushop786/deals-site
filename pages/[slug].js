@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { getDealBySlug, getAllDeals } from '../lib/supabase';
 import { slugify } from '../lib/slugify';
 import Header from '../components/Header';
+import FooterSubscribe from '../components/FooterSubscribe';
 
 const SITE_URL = 'https://www.whileushop.com';
 
@@ -187,7 +188,7 @@ export default function DealPage({ deal, structuredData }) {
                   <span className="deal-page-orig">${Number(original_price).toFixed(2)}</span>
                 )}
                 {discount && (
-                  <span className="deal-page-disc-pill">-{discount}% OFF</span>
+                  <span className="deal-page-disc-pill">{discount}% OFF</span>
                 )}
                 {savings && (
                   <span className="deal-page-savings">You save ${savings}!</span>
@@ -237,6 +238,8 @@ export default function DealPage({ deal, structuredData }) {
           </div>
         </div>
       </main>
+
+      <FooterSubscribe />
 
       <footer className="footer">
         <p>As an Amazon Associate, we earn from qualifying purchases.</p>
