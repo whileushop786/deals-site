@@ -184,10 +184,6 @@ export default function Header({ search, onSearch, totalCount }) {
                 </>
               )}
             </div>
-
-            <div className="side-menu-footer">
-              © {new Date().getFullYear()} WhileUShop.com
-            </div>
           </nav>
         </>
       )}
