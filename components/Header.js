@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { getShopPages } from '../lib/shopPages';
 
 const SOCIAL_LINKS = [
   { name: 'Telegram',  href: 'https://t.me/whileushop',                          top: '9.0%',  height: '18.2%' },
@@ -12,11 +13,16 @@ const SOCIAL_LINKS = [
 export default function Header({ search, onSearch, totalCount }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [shopOpen, setShopOpen] = useState(false);
+  const [shopPages, setShopPages] = useState([]);
 
   const closeAll = () => {
     setMenuOpen(false);
     setShopOpen(false);
   };
+
+  useEffect(() => {
+    getShopPages().then(setShopPages);
+  }, []);
 
   return (
     <>
@@ -76,35 +82,25 @@ export default function Header({ search, onSearch, totalCount }) {
                 <Link href="/" onClick={closeAll}>🏠 Home</Link>
               </li>
 
-              {/* Shop & Save with submenu */}
+              {/* Shop & Save — dynamic from database */}
               <li className="has-submenu">
-                <button
-                  className="submenu-trigger"
-                  onClick={() => setShopOpen(!shopOpen)}
-                >
+                <button className="submenu-trigger" onClick={() => setShopOpen(!shopOpen)}>
                   <span>🛍️ Shop &amp; Save</span>
                   <span className={`submenu-arrow ${shopOpen ? 'open' : ''}`}>›</span>
                 </button>
                 {shopOpen && (
                   <ul className="submenu">
+                    {shopPages.map((page) => (
+                      <li key={page.id}>
+                        <Link href={`/shop/${page.slug}`} onClick={closeAll}>
+                          {page.icon} {page.page_name}
+                        </Link>
+                      </li>
+                    ))}
+                    {/* Freebies Library always at bottom */}
                     <li>
-                      <Link href="/walmart-savings" onClick={closeAll}>
-                        🛒 Walmart Savings
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/wayfair-home" onClick={closeAll}>
-                        🛋️ Wayfair Home
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/michael-kors-outlet" onClick={closeAll}>
-                        👜 Michael Kors Outlet
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/freebies" onClick={closeAll}>
-                        🎁 Freebies
+                      <Link href="/freebies-library" onClick={closeAll}>
+                        📚 Freebies Library
                       </Link>
                     </li>
                   </ul>
