@@ -12,42 +12,10 @@ const SOCIAL_LINKS = [
 export default function Header({ search, onSearch, totalCount }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [shopOpen, setShopOpen] = useState(false);
-  const [menuEmail, setMenuEmail] = useState('');
-  const [menuStatus, setMenuStatus] = useState('idle'); // idle | loading | success | error
-  const [menuErrorMsg, setMenuErrorMsg] = useState('');
 
   const closeAll = () => {
     setMenuOpen(false);
     setShopOpen(false);
-  };
-
-  const handleMenuSubscribe = async (e) => {
-    e.preventDefault();
-    if (!menuEmail || !menuEmail.includes('@')) {
-      setMenuErrorMsg('Please enter a valid email.');
-      return;
-    }
-    setMenuStatus('loading');
-    setMenuErrorMsg('');
-
-    try {
-      const res = await fetch('/api/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: menuEmail }),
-      });
-      const data = await res.json();
-
-      if (!res.ok) {
-        setMenuErrorMsg(data.error || 'Something went wrong.');
-        setMenuStatus('error');
-        return;
-      }
-      setMenuStatus('success');
-    } catch {
-      setMenuErrorMsg('Something went wrong.');
-      setMenuStatus('error');
-    }
   };
 
   return (
@@ -156,38 +124,6 @@ export default function Header({ search, onSearch, totalCount }) {
                 <Link href="/privacy" onClick={closeAll}>🔒 Privacy Policy</Link>
               </li>
             </ul>
-
-            {/* Compact email subscribe form */}
-            <div className="menu-subscribe">
-              {menuStatus === 'success' ? (
-                <div className="menu-subscribe-success">
-                  🎉 You're subscribed!
-                </div>
-              ) : (
-                <>
-                  <p className="menu-subscribe-title">🔥 Never Miss a Deal!</p>
-                  <p className="menu-subscribe-sub">Handpicked deals &amp; verified coupons, daily.</p>
-                  <form onSubmit={handleMenuSubscribe} className="menu-subscribe-form">
-                    <input
-                      type="email"
-                      placeholder="Your email"
-                      value={menuEmail}
-                      onChange={(e) => setMenuEmail(e.target.value)}
-                      className="menu-subscribe-input"
-                      disabled={menuStatus === 'loading'}
-                    />
-                    <button
-                      type="submit"
-                      className="menu-subscribe-btn"
-                      disabled={menuStatus === 'loading'}
-                    >
-                      {menuStatus === 'loading' ? '...' : '→'}
-                    </button>
-                  </form>
-                  {menuErrorMsg && <p className="menu-subscribe-error">{menuErrorMsg}</p>}
-                </>
-              )}
-            </div>
           </nav>
         </>
       )}
