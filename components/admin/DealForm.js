@@ -227,10 +227,12 @@ export default function DealForm({ deal, onClose, onSaved }) {
                 <option value="walmart">Walmart</option>
                 <option value="target">Target</option>
                 <option value="wayfair">Wayfair</option>
+                <option value="macys">Macys</option>
                 <option value="ebay">eBay</option>
                 <option value="bestbuy">Best Buy</option>
                 <option value="costco">Costco</option>
                 <option value="etsy">Etsy</option>
+                <option value="website">Website</option>
               </select>
             </div>
           </div>
