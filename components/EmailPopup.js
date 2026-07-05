@@ -1,33 +1,45 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export default function EmailPopup() {
   const [visible, setVisible] = useState(false);
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('idle'); // idle | loading | success | error
   const [errorMsg, setErrorMsg] = useState('');
+  const shownRef = useRef(false);
 
   useEffect(() => {
-    // Don't show if already subscribed or dismissed within 7 days
-    const dismissed = localStorage.getItem('popup_dismissed');
-    const subscribed = localStorage.getItem('popup_subscribed');
-    if (subscribed || (dismissed && Date.now() - parseInt(dismissed) < 7 * 24 * 60 * 60 * 1000)) return;
+    // Don't show if already subscribed or dismissed in last 7 days
+    try {
+      const subscribed = localStorage.getItem('popup_subscribed');
+      const dismissed = localStorage.getItem('popup_dismissed');
+      const dismissedTime = dismissed ? parseInt(dismissed) : 0;
+      const sevenDays = 7 * 24 * 60 * 60 * 1000;
+
+      if (subscribed || (dismissed && Date.now() - dismissedTime < sevenDays)) return;
+    } catch (e) {
+      // localStorage not available
+      return;
+    }
 
     const handleScroll = () => {
+      if (shownRef.current) return;
       const scrolled = window.scrollY;
       const total = document.documentElement.scrollHeight - window.innerHeight;
+      if (total <= 0) return;
       const pct = (scrolled / total) * 100;
       if (pct >= 30) {
+        shownRef.current = true;
         setVisible(true);
         window.removeEventListener('scroll', handleScroll);
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleDismiss = () => {
-    localStorage.setItem('popup_dismissed', Date.now().toString());
+    try { localStorage.setItem('popup_dismissed', Date.now().toString()); } catch (e) {}
     setVisible(false);
   };
 
@@ -46,7 +58,6 @@ export default function EmailPopup() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
-
       const data = await res.json();
 
       if (!res.ok) {
@@ -56,7 +67,7 @@ export default function EmailPopup() {
       }
 
       setStatus('success');
-      localStorage.setItem('popup_subscribed', '1');
+      try { localStorage.setItem('popup_subscribed', '1'); } catch (e) {}
     } catch (err) {
       setErrorMsg('Something went wrong. Please try again.');
       setStatus('error');
