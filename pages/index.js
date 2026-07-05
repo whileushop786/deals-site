@@ -37,7 +37,6 @@ export default function Home() {
   const [search, setSearch] = useState('');
   const [query, setQuery] = useState('');
   const [totalCount, setTotalCount] = useState(0);
-  const loaderRef = useRef(null);
   const searchTimer = useRef(null);
 
   const fetchInitial = useCallback(async (q) => {
@@ -86,20 +85,7 @@ export default function Home() {
     return () => clearTimeout(searchTimer.current);
   }, [query, fetchInitial]);
 
-  // Auto-load first extra batch on scroll, then manual after
-  useEffect(() => {
-    if (page > 1) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasMore && !loadingMore && !loading) {
-          fetchMore(query, page);
-        }
-      },
-      { threshold: 0.1, rootMargin: '200px' }
-    );
-    if (loaderRef.current) observer.observe(loaderRef.current);
-    return () => observer.disconnect();
-  }, [hasMore, loadingMore, loading, page, query, fetchMore]);
+  // No auto-scroll loading — manual Load More button only
 
   const handleSearch = (e) => {
     const val = e.target.value;
@@ -220,14 +206,14 @@ export default function Home() {
                 </section>
               );
             })}
-            <div ref={loaderRef} style={{ marginTop: 16 }}>
+            <div style={{ marginTop: 16 }}>
               {loadingMore && (
                 <div className="load-more-indicator">
                   <div className="load-more-spinner" />
                   <span>Loading more deals...</span>
                 </div>
               )}
-              {!loadingMore && hasMore && page > 1 && (
+              {!loadingMore && hasMore && (
                 <div className="load-more-btn-wrap">
                   <button className="load-more-btn" onClick={handleLoadMoreClick}>
                     Load More Deals ↓
