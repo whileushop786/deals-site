@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { getShopPages } from '../lib/shopPages';
 
 const SOCIAL_LINKS = [
@@ -14,10 +15,29 @@ export default function Header({ search, onSearch, totalCount }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [shopOpen, setShopOpen] = useState(false);
   const [shopPages, setShopPages] = useState([]);
+  const [localSearch, setLocalSearch] = useState('');
+  const router = useRouter();
 
   const closeAll = () => { setMenuOpen(false); setShopOpen(false); };
 
   useEffect(() => { getShopPages().then(setShopPages); }, []);
+
+  // On non-homepage, handle search by redirecting to homepage with query
+  const isHomepage = router.pathname === '/';
+
+  const handleLocalSearch = (e) => {
+    const val = e.target.value;
+    setLocalSearch(val);
+    if (!isHomepage) {
+      // Redirect to homepage with search query after short delay
+      clearTimeout(window._searchTimer);
+      window._searchTimer = setTimeout(() => {
+        if (val.trim()) {
+          router.push(`/?q=${encodeURIComponent(val.trim())}`);
+        }
+      }, 600);
+    }
+  };
 
   return (
     <>
@@ -48,9 +68,30 @@ export default function Header({ search, onSearch, totalCount }) {
         <div className="search-bar-inner">
           <div className="search-wrap">
             <span className="search-icon">🔍</span>
-            <input type="text" className="search-input" placeholder="Looking for something?" value={search} onChange={onSearch} />
+            {isHomepage ? (
+              <input
+                type="text"
+                className="search-input"
+                placeholder="Looking for something?"
+                value={search}
+                onChange={onSearch}
+              />
+            ) : (
+              <input
+                type="text"
+                className="search-input"
+                placeholder="Looking for something?"
+                value={localSearch}
+                onChange={handleLocalSearch}
+              />
+            )}
           </div>
-          <div className="deal-count-badge"><strong>{totalCount}</strong> active deals</div>
+          {/* Show on all screen sizes */}
+          {isHomepage && totalCount > 0 && (
+            <div className="deal-count-badge">
+              <strong>{totalCount}</strong> deals
+            </div>
+          )}
         </div>
       </div>
 
