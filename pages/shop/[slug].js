@@ -63,12 +63,21 @@ export default function ShopPage({ page, deals }) {
 
       <main className="static-page" style={{ paddingTop: 0 }}>
         <div className="static-container">
+
+          {/* Hero */}
           <div className="static-hero">
             <h1>{page.icon} <span>{page.page_name}</span></h1>
             {page.description && <p>{page.description}</p>}
           </div>
 
-          {/* Deal Cards */}
+          {/* 1. HTML Page Content FIRST */}
+          {page.content && (
+            <div className="static-content" style={{ marginBottom: 24 }}>
+              <div className="static-card shop-page-content" dangerouslySetInnerHTML={{ __html: page.content }} />
+            </div>
+          )}
+
+          {/* 2. Deal Cards SECOND */}
           {deals && deals.length > 0 && (
             <div className="shop-deals-section">
               <h2 className="shop-deals-heading">Latest Deals</h2>
@@ -90,24 +99,6 @@ export default function ShopPage({ page, deals }) {
               </div>
             </div>
           )}
-
-          {/* HTML Page Content */}
-          {page.content && (
-            <div className="static-content">
-              <div className="static-card shop-page-content" dangerouslySetInnerHTML={{ __html: page.content }} />
-            </div>
-          )}
-
-          <div className="static-card" style={{ marginTop: 16 }}>
-            <div className="static-icon">📢</div>
-            <h2>Never Miss a Deal!</h2>
-            <p>Follow us for real-time updates:</p>
-            <ul className="static-list">
-              <li>📱 <strong>Telegram</strong> — <a href="https://t.me/whileushop" style={{color:'#ff6b00'}}>t.me/whileushop</a></li>
-              <li>📘 <strong>Facebook</strong> — <a href="https://www.facebook.com/whileushop786" style={{color:'#ff6b00'}}>facebook.com/whileushop786</a></li>
-              <li>📸 <strong>Instagram</strong> — <a href="https://instagram.com/crazydealshunter" style={{color:'#ff6b00'}}>@crazydealshunter</a></li>
-            </ul>
-          </div>
 
           <div className="static-back">
             <Link href="/" className="back-btn">← Back to All Deals</Link>
