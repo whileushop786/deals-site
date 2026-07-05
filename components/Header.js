@@ -15,27 +15,19 @@ export default function Header({ search, onSearch, totalCount }) {
   const [shopOpen, setShopOpen] = useState(false);
   const [shopPages, setShopPages] = useState([]);
 
-  const closeAll = () => {
-    setMenuOpen(false);
-    setShopOpen(false);
-  };
+  const closeAll = () => { setMenuOpen(false); setShopOpen(false); };
 
-  useEffect(() => {
-    getShopPages().then(setShopPages);
-  }, []);
+  useEffect(() => { getShopPages().then(setShopPages); }, []);
 
   return (
     <>
-      {/* ── Sticky Header ── */}
       <header className="sticky-header">
         <Link href="/" className="sticky-logo">
           <img src="/logo.png" alt="WhileUShop.com" className="sticky-logo-img" />
         </Link>
-
         <a href="https://www.amazon.com/shop/caramc" target="_blank" rel="noopener noreferrer" className="header-amazon-link">
           <img src="/amazon-storefront.png" alt="Shop our Amazon Storefront" className="header-amazon-img" />
         </a>
-
         <div className="sticky-right">
           <button className="menu-btn" onClick={() => setMenuOpen(!menuOpen)} aria-label="Open menu">
             {menuOpen ? '✕' : '☰'}
@@ -43,7 +35,6 @@ export default function Header({ search, onSearch, totalCount }) {
         </div>
       </header>
 
-      {/* ── Social Media Banner ── */}
       <div className="social-banner">
         <img src="/social-media.png" alt="Join our social channels" className="social-banner-img" />
         {SOCIAL_LINKS.map((s) => (
@@ -53,21 +44,16 @@ export default function Header({ search, onSearch, totalCount }) {
         ))}
       </div>
 
-      {/* ── Search Bar ── */}
       <div className="search-bar-wrap">
         <div className="search-bar-inner">
           <div className="search-wrap">
             <span className="search-icon">🔍</span>
-            <input type="text" className="search-input" placeholder="Looking for something?"
-              value={search} onChange={onSearch} />
+            <input type="text" className="search-input" placeholder="Looking for something?" value={search} onChange={onSearch} />
           </div>
-          <div className="deal-count-badge">
-            <strong>{totalCount}</strong> active deals
-          </div>
+          <div className="deal-count-badge"><strong>{totalCount}</strong> active deals</div>
         </div>
       </div>
 
-      {/* ── Side Menu ── */}
       {menuOpen && (
         <>
           <div className="menu-overlay" onClick={closeAll} />
@@ -76,13 +62,8 @@ export default function Header({ search, onSearch, totalCount }) {
               <span className="side-menu-title">Menu</span>
               <button className="side-menu-close" onClick={closeAll}>✕</button>
             </div>
-
             <ul className="side-menu-links">
-              <li>
-                <Link href="/" onClick={closeAll}>🏠 Home</Link>
-              </li>
-
-              {/* Shop & Save — dynamic from database */}
+              <li><Link href="/" onClick={closeAll}>🏠 Home</Link></li>
               <li className="has-submenu">
                 <button className="submenu-trigger" onClick={() => setShopOpen(!shopOpen)}>
                   <span>🛍️ Shop &amp; Save</span>
@@ -92,33 +73,16 @@ export default function Header({ search, onSearch, totalCount }) {
                   <ul className="submenu">
                     {shopPages.map((page) => (
                       <li key={page.id}>
-                        <Link href={`/shop/${page.slug}`} onClick={closeAll}>
-                          {page.icon} {page.page_name}
-                        </Link>
+                        <Link href={`/shop/${page.slug}`} onClick={closeAll}>{page.icon} {page.page_name}</Link>
                       </li>
                     ))}
-                    {/* Freebies Library always at bottom */}
-                    <li>
-                      <Link href="/freebies-library" onClick={closeAll}>
-                        📚 Freebies Library
-                      </Link>
-                    </li>
                   </ul>
                 )}
               </li>
-
-              <li>
-                <Link href="/freebies-library" onClick={closeAll}>📚 Freebies Library</Link>
-              </li>
-              <li>
-                <Link href="/about" onClick={closeAll}>👋 About Us</Link>
-              </li>
-              <li>
-                <Link href="/contact" onClick={closeAll}>📩 Contact Us</Link>
-              </li>
-              <li>
-                <Link href="/privacy" onClick={closeAll}>🔒 Privacy Policy</Link>
-              </li>
+              <li><Link href="/freebies-library" onClick={closeAll}>📚 Freebies Library</Link></li>
+              <li><Link href="/about" onClick={closeAll}>👋 About Us</Link></li>
+              <li><Link href="/contact" onClick={closeAll}>📩 Contact Us</Link></li>
+              <li><Link href="/privacy" onClick={closeAll}>🔒 Privacy Policy</Link></li>
             </ul>
           </nav>
         </>
