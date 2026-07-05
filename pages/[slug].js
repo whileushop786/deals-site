@@ -10,23 +10,17 @@ const SITE_URL = 'https://www.whileushop.com';
 
 function getShopLabel(platform) {
   const map = {
-    amazon:   'Shop on Amazon',
-    walmart:  'Shop on Walmart',
-    target:   'Shop on Target',
-    ebay:     'Shop on eBay',
-    bestbuy:  'Shop on Best Buy',
-    costco:   'Shop on Costco',
-    flipkart: 'Shop on Flipkart',
-    meesho:   'Shop on Meesho',
-    etsy:     'Shop on Etsy',
+    amazon: 'Shop on Amazon', walmart: 'Shop on Walmart', target: 'Shop on Target',
+    ebay: 'Shop on eBay', bestbuy: 'Shop on Best Buy', costco: 'Shop on Costco',
+    flipkart: 'Shop on Flipkart', meesho: 'Shop on Meesho', etsy: 'Shop on Etsy', wayfair: 'Shop on Wayfair',
   };
   const key = (platform || 'amazon').toLowerCase().replace(/\s+/g, '');
   return map[key] || `Shop on ${platform}`;
 }
 
-function CartIcon() {
+function CartIcon({ size = 15 }) {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
       <circle cx="9" cy="21" r="1"></circle>
       <circle cx="20" cy="21" r="1"></circle>
       <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
@@ -56,25 +50,14 @@ export default function DealPage({ deal, structuredData }) {
     );
   }
 
-  const {
-    title, image_url, original_price, sale_price,
-    discount_percent, coupon_code, affiliate_link,
-    platform = 'amazon', description, deal_date,
-  } = deal;
+  const { title, image_url, original_price, sale_price, discount_percent, coupon_code, affiliate_link, platform = 'amazon', description, deal_date } = deal;
 
-  const discount = discount_percent ||
-    (original_price && sale_price
-      ? Math.round(((original_price - sale_price) / original_price) * 100)
-      : null);
-
-  const savings = original_price && sale_price
-    ? (Number(original_price) - Number(sale_price)).toFixed(2) : null;
-
+  const discount = discount_percent || (original_price && sale_price ? Math.round(((original_price - sale_price) / original_price) * 100) : null);
+  const savings = original_price && sale_price ? (Number(original_price) - Number(sale_price)).toFixed(2) : null;
   const dealUrl = `${SITE_URL}/${slugify(title)}`;
   const fallbackImage = `${SITE_URL}/icon-512.png`;
   const metaImage = image_url || fallbackImage;
 
-  // Strong, specific meta description (under 160 chars)
   const metaDesc = [
     title,
     `for only $${Number(sale_price).toFixed(2)}`,
@@ -83,18 +66,11 @@ export default function DealPage({ deal, structuredData }) {
     'Best price via WhileUShop.com.',
   ].filter(Boolean).join(' ').substring(0, 160);
 
-  // Focused keywords — product specific
   const metaKeywords = [
-    title,
-    `${title} deal`,
-    `${title} coupon`,
+    title, `${title} deal`, `${title} coupon`,
     coupon_code ? `${title} coupon code ${coupon_code}` : '',
-    `${title} discount`,
-    `buy ${title.split(' ').slice(0, 5).join(' ')}`,
-    platform ? `${platform} deal` : '',
-    'WhileUShop',
-    'promo code',
-    'best price',
+    `${title} discount`, `buy ${title.split(' ').slice(0, 5).join(' ')}`,
+    platform ? `${platform} deal` : '', 'WhileUShop', 'promo code', 'best price',
   ].filter(Boolean).join(', ');
 
   const handleCopy = () => {
@@ -115,14 +91,11 @@ export default function DealPage({ deal, structuredData }) {
   return (
     <>
       <Head>
-        {/* Title — includes price and discount for CTR */}
         <title>{title} — ${Number(sale_price).toFixed(2)}{discount ? ` (${discount}% OFF)` : ''} | WhileUShop.com</title>
         <meta name="description" content={metaDesc} />
         <meta name="keywords" content={metaKeywords} />
         <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
         <meta name="author" content="WhileUShop.com" />
-
-        {/* Open Graph — rich preview on Instagram, WhatsApp, Facebook */}
         <meta property="og:type" content="product" />
         <meta property="og:url" content={dealUrl} />
         <meta property="og:title" content={`🔥 ${title} — $${Number(sale_price).toFixed(2)}${discount ? ` (${discount}% OFF)` : ''}`} />
@@ -135,17 +108,12 @@ export default function DealPage({ deal, structuredData }) {
         <meta property="og:locale" content="en_US" />
         <meta property="product:price:amount" content={sale_price} />
         <meta property="product:price:currency" content="USD" />
-
-        {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={`🔥 ${title} — $${Number(sale_price).toFixed(2)}`} />
         <meta name="twitter:description" content={metaDesc} />
         <meta name="twitter:image" content={metaImage} />
         <meta name="twitter:image:alt" content={title} />
-
         <link rel="canonical" href={dealUrl} />
-
-        {/* JSON-LD Product Schema — enables Google Shopping rich results */}
         {Array.isArray(structuredData)
           ? structuredData.map((schema, i) => (
               <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
@@ -156,7 +124,6 @@ export default function DealPage({ deal, structuredData }) {
 
       <Header search="" onSearch={() => {}} totalCount={0} />
 
-      {/* Breadcrumb for SEO */}
       <nav aria-label="Breadcrumb" style={{ padding: '10px 20px', maxWidth: 1000, margin: '0 auto', fontSize: 12, color: '#999' }}>
         <Link href="/" style={{ color: '#ff6b00' }}>Home</Link>
         <span style={{ margin: '0 8px' }}>›</span>
@@ -175,7 +142,6 @@ export default function DealPage({ deal, structuredData }) {
                 className="deal-page-image"
                 onError={() => setImgError(true)}
               />
-              {/* Discount badge removed from image — shown next to price below */}
             </div>
 
             <div className="deal-page-details">
@@ -184,15 +150,9 @@ export default function DealPage({ deal, structuredData }) {
 
               <div className="deal-page-prices">
                 <span className="deal-page-sale">${Number(sale_price).toFixed(2)}</span>
-                {original_price && (
-                  <span className="deal-page-orig">${Number(original_price).toFixed(2)}</span>
-                )}
-                {discount && (
-                  <span className="deal-page-disc-pill">{discount}% OFF</span>
-                )}
-                {savings && (
-                  <span className="deal-page-savings">You save ${savings}!</span>
-                )}
+                {original_price && <span className="deal-page-orig">${Number(original_price).toFixed(2)}</span>}
+                {discount && <span className="deal-page-disc-pill">{discount}% OFF</span>}
+                {savings && <span className="deal-page-savings">You save ${savings}!</span>}
               </div>
 
               {coupon_code && (
@@ -208,18 +168,17 @@ export default function DealPage({ deal, structuredData }) {
                 </div>
               )}
 
-              <div className="deal-page-description">
-                <h2>Product Details</h2>
-                {description ? (
-                  <p>{description}</p>
-                ) : (
-                  <p className="deal-page-no-desc">Visit the product page for full details, specifications and customer reviews.</p>
-                )}
-              </div>
+              {description && (
+                <div className="deal-page-description">
+                  <h2>Product Details</h2>
+                  {/* Renders HTML from admin panel correctly */}
+                  <div dangerouslySetInnerHTML={{ __html: description }} />
+                </div>
+              )}
 
               <div className="deal-page-actions">
                 <a href={affiliate_link} target="_blank" rel="noopener noreferrer sponsored" className="deal-page-shop-btn">
-                  <CartIcon /> {getShopLabel(platform)}
+                  <CartIcon size={18} /> {getShopLabel(platform)}
                 </a>
                 <button className="deal-page-share-btn" onClick={handleShare}>
                   🔗 Share this Deal
@@ -232,7 +191,6 @@ export default function DealPage({ deal, structuredData }) {
             </div>
           </div>
 
-          {/* Back to deals button at bottom */}
           <div className="static-back" style={{ marginTop: 28 }}>
             <Link href="/" className="back-btn">← Back to All Deals</Link>
           </div>
@@ -251,9 +209,7 @@ export default function DealPage({ deal, structuredData }) {
 
 export async function getStaticPaths() {
   const deals = await getAllDeals();
-  const paths = deals.map((deal) => ({
-    params: { slug: slugify(deal.title) },
-  }));
+  const paths = deals.map((deal) => ({ params: { slug: slugify(deal.title) } }));
   return { paths, fallback: 'blocking' };
 }
 
@@ -261,18 +217,16 @@ export async function getStaticProps({ params }) {
   const deal = await getDealBySlug(params.slug);
   if (!deal) return { notFound: true };
 
-  const platformName = deal.platform
-    ? deal.platform.charAt(0).toUpperCase() + deal.platform.slice(1)
-    : 'Online Store';
+  const platformName = deal.platform ? deal.platform.charAt(0).toUpperCase() + deal.platform.slice(1) : 'Online Store';
+  const dealUrl = `${SITE_URL}/${slugify(deal.title)}`;
 
-  // Full Product schema for Google Shopping / rich results
-  const structuredData = {
+  const productSchema = {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: deal.title,
-    description: deal.description || `${deal.title} at the best price via WhileUShop.com.`,
+    description: deal.description ? deal.description.replace(/<[^>]+>/g, '') : `${deal.title} at the best price via WhileUShop.com.`,
     image: [deal.image_url || `${SITE_URL}/icon-512.png`],
-    url: `${SITE_URL}/${slugify(deal.title)}`,
+    url: dealUrl,
     sku: `WUS-${deal.id}`,
     brand: { '@type': 'Brand', name: platformName },
     offers: {
@@ -284,11 +238,6 @@ export async function getStaticProps({ params }) {
       itemCondition: 'https://schema.org/NewCondition',
       availability: 'https://schema.org/InStock',
       seller: { '@type': 'Organization', name: platformName },
-      hasMerchantReturnPolicy: {
-        '@type': 'MerchantReturnPolicy',
-        applicableCountry: 'US',
-        returnPolicyCategory: 'https://schema.org/MerchantReturnUnspecified',
-      },
       shippingDetails: {
         '@type': 'OfferShippingDetails',
         shippingRate: { '@type': 'MonetaryAmount', value: '0', currency: 'USD' },
@@ -302,18 +251,17 @@ export async function getStaticProps({ params }) {
     },
   };
 
-  // Add breadcrumb schema
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
-      { '@type': 'ListItem', position: 2, name: deal.title, item: `${SITE_URL}/${slugify(deal.title)}` },
+      { '@type': 'ListItem', position: 2, name: deal.title, item: dealUrl },
     ],
   };
 
   return {
-    props: { deal, structuredData: [structuredData, breadcrumbSchema] },
+    props: { deal, structuredData: [productSchema, breadcrumbSchema] },
     revalidate: 60,
   };
 }
