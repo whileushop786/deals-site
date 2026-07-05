@@ -6,6 +6,16 @@ import { supabase } from '../lib/supabase';
 
 const SITE_URL = "https://www.whileushop.com";
 
+// Convert Cloudinary URL to force download
+function getDownloadUrl(url) {
+  if (!url) return url;
+  // For Cloudinary URLs, add fl_attachment to force download
+  if (url.includes('cloudinary.com')) {
+    return url.replace('/upload/', '/upload/fl_attachment/');
+  }
+  return url;
+}
+
 export default function FreebiesLibrary({ resources }) {
   const schema = {
     '@context': 'https://schema.org',
@@ -29,9 +39,6 @@ export default function FreebiesLibrary({ resources }) {
         <meta property="og:url" content={`${SITE_URL}/freebies-library`} />
         <meta property="og:image" content={`${SITE_URL}/icon-512.png`} />
         <meta property="og:site_name" content="WhileUShop.com" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Freebies Library — Free Saving Guides & Resources" />
-        <meta name="twitter:description" content="Free downloadable saving guides and coupon resources." />
         <link rel="canonical" href={`${SITE_URL}/freebies-library`} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
       </Head>
@@ -57,9 +64,15 @@ export default function FreebiesLibrary({ resources }) {
                 <div key={item.id} className="library-card">
                   <div className="library-card-icon">{item.icon || '📄'}</div>
                   <h3 className="library-card-title">{item.title}</h3>
-                  <p className="library-card-desc">{item.description}</p>
+                  {item.description && (
+                    <div
+                      className="library-card-desc"
+                      dangerouslySetInnerHTML={{ __html: item.description }}
+                    />
+                  )}
                   <a
-                    href={item.file_url}
+                    href={getDownloadUrl(item.file_url)}
+                    download
                     target="_blank"
                     rel="noopener noreferrer"
                     className="library-download-btn"
