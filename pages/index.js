@@ -1,14 +1,15 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { format, parseISO } from 'date-fns';
 import { getDeals, getTotalCount } from '../lib/supabase';
 import DealCard from '../components/DealCard';
 import { SkeletonGrid } from '../components/SkeletonCard';
 import Header from '../components/Header';
-import FooterSubscribe from '../components/FooterSubscribe';
 import EmailPopup from '../components/EmailPopup';
 import Ticker from '../components/Ticker';
 import AdBanner from '../components/AdBanner';
+import FooterSubscribe from '../components/FooterSubscribe';
 
 const SITE_NAME = "WhileUShop.com — Best Online Deals, Coupons & Promo Codes";
 const SITE_DESC = "Save more with handpicked deals, verified coupon codes, promo offers, and exclusive discounts from top U.S. online stores — updated daily so you never miss a great deal.";
@@ -26,6 +27,7 @@ function groupByDate(deals) {
 }
 
 export default function Home() {
+  const router = useRouter();
   const [deals, setDeals] = useState([]);
   const [groupedDeals, setGroupedDeals] = useState({});
   const [loading, setLoading] = useState(true);
@@ -35,7 +37,6 @@ export default function Home() {
   const [search, setSearch] = useState('');
   const [query, setQuery] = useState('');
   const [totalCount, setTotalCount] = useState(0);
-
   const loaderRef = useRef(null);
   const searchTimer = useRef(null);
 
@@ -68,6 +69,15 @@ export default function Home() {
     setLoadingMore(false);
   }, [loadingMore, hasMore]);
 
+  // Read ?q= from URL (from non-homepage search redirects)
+  useEffect(() => {
+    if (router.isReady && router.query.q) {
+      const q = router.query.q;
+      setSearch(q);
+      setQuery(q);
+    }
+  }, [router.isReady, router.query.q]);
+
   useEffect(() => { fetchInitial(''); }, [fetchInitial]);
 
   useEffect(() => {
@@ -76,11 +86,9 @@ export default function Home() {
     return () => clearTimeout(searchTimer.current);
   }, [query, fetchInitial]);
 
+  // Auto-load first extra batch on scroll, then manual after
   useEffect(() => {
-    // Auto-load only the FIRST extra batch via scroll.
-    // After that, require manual "Load More" click.
-    if (page > 1) return; // only observe before first manual load
-
+    if (page > 1) return;
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMore && !loadingMore && !loading) {
@@ -93,15 +101,13 @@ export default function Home() {
     return () => observer.disconnect();
   }, [hasMore, loadingMore, loading, page, query, fetchMore]);
 
-  const handleLoadMoreClick = () => {
-    fetchMore(query, page);
-  };
-
   const handleSearch = (e) => {
     const val = e.target.value;
     setSearch(val);
     setQuery(val);
   };
+
+  const handleLoadMoreClick = () => { fetchMore(query, page); };
 
   const sortedDates = Object.keys(groupedDeals).sort((a, b) => new Date(b) - new Date(a));
 
@@ -118,7 +124,6 @@ export default function Home() {
     }
   };
 
-  // JSON-LD for homepage — WebSite + SearchAction (enables Google Sitelinks Search)
   const websiteSchema = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
@@ -127,15 +132,11 @@ export default function Home() {
     description: SITE_DESC,
     potentialAction: {
       '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: `${SITE_URL}/?q={search_term_string}`,
-      },
+      target: { '@type': 'EntryPoint', urlTemplate: `${SITE_URL}/?q={search_term_string}` },
       'query-input': 'required name=search_term_string',
     },
   };
 
-  // JSON-LD Organization schema
   const orgSchema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
@@ -158,8 +159,6 @@ export default function Home() {
         <meta name="keywords" content={SITE_KEYWORDS} />
         <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
         <meta name="author" content="WhileUShop.com" />
-
-        {/* Open Graph */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content={SITE_URL} />
         <meta property="og:title" content={SITE_NAME} />
@@ -170,18 +169,12 @@ export default function Home() {
         <meta property="og:image:alt" content="WhileUShop.com — Best Online Deals" />
         <meta property="og:site_name" content="WhileUShop.com" />
         <meta property="og:locale" content="en_US" />
-
-        {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:url" content={SITE_URL} />
         <meta name="twitter:title" content={SITE_NAME} />
         <meta name="twitter:description" content={SITE_DESC} />
         <meta name="twitter:image" content={`${SITE_URL}/icon-512.png`} />
-        <meta name="twitter:image:alt" content="WhileUShop.com" />
-
         <link rel="canonical" href={SITE_URL} />
-
-        {/* JSON-LD Structured Data */}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }} />
       </Head>
