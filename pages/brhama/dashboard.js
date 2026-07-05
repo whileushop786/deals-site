@@ -8,102 +8,84 @@ import LibraryForm from '../../components/admin/LibraryForm';
 import ShopPageForm from '../../components/admin/ShopPageForm';
 import ShopDealForm from '../../components/admin/ShopDealForm';
 
+const DEALS_PER_PAGE = 20;
+
 export default function AdminDashboard() {
   const router = useRouter();
   const [checking, setChecking] = useState(true);
   const [activeTab, setActiveTab] = useState('deals');
 
-  // Deals
   const [deals, setDeals] = useState([]);
   const [loadingDeals, setLoadingDeals] = useState(true);
   const [showDealForm, setShowDealForm] = useState(false);
   const [editingDeal, setEditingDeal] = useState(null);
   const [dealSearch, setDealSearch] = useState('');
   const [dealFilter, setDealFilter] = useState('all');
+  const [dealsPage, setDealsPage] = useState(1);
 
-  // Library
   const [library, setLibrary] = useState([]);
   const [loadingLibrary, setLoadingLibrary] = useState(true);
   const [showLibraryForm, setShowLibraryForm] = useState(false);
   const [editingLibraryItem, setEditingLibraryItem] = useState(null);
 
-  // Shop Pages
   const [shopPages, setShopPages] = useState([]);
   const [loadingShopPages, setLoadingShopPages] = useState(true);
   const [showShopPageForm, setShowShopPageForm] = useState(false);
   const [editingShopPage, setEditingShopPage] = useState(null);
 
-  // Shop Deals
   const [shopDeals, setShopDeals] = useState([]);
   const [loadingShopDeals, setLoadingShopDeals] = useState(true);
   const [showShopDealForm, setShowShopDealForm] = useState(false);
   const [editingShopDeal, setEditingShopDeal] = useState(null);
   const [selectedPageFilter, setSelectedPageFilter] = useState('all');
 
-  // Auth
   useEffect(() => {
     getSession().then((session) => {
       if (!session) router.push('/brhama');
       else setChecking(false);
     });
-    const { data: listener } = onAuthChange((session) => {
-      if (!session) router.push('/brhama');
-    });
+    const { data: listener } = onAuthChange((session) => { if (!session) router.push('/brhama'); });
     return () => listener.subscription.unsubscribe();
   }, [router]);
 
   const fetchDeals = useCallback(async () => {
     setLoadingDeals(true);
     const { data } = await supabase.from('deals').select('*').order('created_at', { ascending: false });
-    setDeals(data || []);
-    setLoadingDeals(false);
+    setDeals(data || []); setLoadingDeals(false);
   }, []);
 
   const fetchLibrary = useCallback(async () => {
     setLoadingLibrary(true);
     const { data } = await supabase.from('freebies_library').select('*').order('created_at', { ascending: false });
-    setLibrary(data || []);
-    setLoadingLibrary(false);
+    setLibrary(data || []); setLoadingLibrary(false);
   }, []);
 
   const fetchShopPages = useCallback(async () => {
     setLoadingShopPages(true);
     const { data } = await supabase.from('shop_pages').select('*').order('created_at', { ascending: true });
-    setShopPages(data || []);
-    setLoadingShopPages(false);
+    setShopPages(data || []); setLoadingShopPages(false);
   }, []);
 
   const fetchShopDeals = useCallback(async () => {
     setLoadingShopDeals(true);
-    const { data } = await supabase
-      .from('shop_deals')
-      .select('*, shop_pages(page_name, icon)')
-      .order('created_at', { ascending: false });
-    setShopDeals(data || []);
-    setLoadingShopDeals(false);
+    const { data } = await supabase.from('shop_deals').select('*, shop_pages(page_name, icon)').order('created_at', { ascending: false });
+    setShopDeals(data || []); setLoadingShopDeals(false);
   }, []);
 
   useEffect(() => {
-    if (!checking) {
-      fetchDeals();
-      fetchLibrary();
-      fetchShopPages();
-      fetchShopDeals();
-    }
+    if (!checking) { fetchDeals(); fetchLibrary(); fetchShopPages(); fetchShopDeals(); }
   }, [checking, fetchDeals, fetchLibrary, fetchShopPages, fetchShopDeals]);
 
-  const handleLogout = async () => {
-    await signOut();
-    router.push('/brhama');
-  };
+  // Reset page when search/filter changes
+  useEffect(() => { setDealsPage(1); }, [dealSearch, dealFilter]);
 
-  // Generic toggle active
+  const handleLogout = async () => { await signOut(); router.push('/brhama'); };
+
   const toggleActive = async (table, id, current, setter) => {
     const { error } = await supabase.from(table).update({ active: !current }).eq('id', id);
     if (!error) setter((prev) => prev.map((d) => d.id === id ? { ...d, active: !current } : d));
   };
 
-  // Generic delete
   const deleteItem = async (table, id, title, setter) => {
     if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
     const { error } = await supabase.from(table).delete().eq('id', id);
@@ -111,15 +93,15 @@ export default function AdminDashboard() {
     else alert('Failed to delete.');
   };
 
-  const filteredDeals = deals.filter((d) => {
+  const allFilteredDeals = deals.filter((d) => {
     const matchSearch = d.title.toLowerCase().includes(dealSearch.toLowerCase());
     const matchFilter = dealFilter === 'all' || (dealFilter === 'active' && d.active) || (dealFilter === 'inactive' && !d.active);
     return matchSearch && matchFilter;
   });
+  const filteredDeals = allFilteredDeals.slice(0, dealsPage * DEALS_PER_PAGE);
+  const hasMoreDeals = filteredDeals.length < allFilteredDeals.length;
 
-  const filteredShopDeals = shopDeals.filter((d) =>
-    selectedPageFilter === 'all' || String(d.page_id) === String(selectedPageFilter)
-  );
+  const filteredShopDeals = shopDeals.filter((d) => selectedPageFilter === 'all' || String(d.page_id) === String(selectedPageFilter));
 
   if (checking) return <div className="admin-loading">Checking access...</div>;
 
@@ -139,7 +121,6 @@ export default function AdminDashboard() {
           <button onClick={handleLogout} className="admin-logout-btn">Logout</button>
         </header>
 
-        {/* Tabs */}
         <div className="admin-tabs">
           <button className={`admin-tab-btn ${activeTab==='deals'?'active':''}`} onClick={() => setActiveTab('deals')}>🛍️ Deals</button>
           <button className={`admin-tab-btn ${activeTab==='shop-pages'?'active':''}`} onClick={() => setActiveTab('shop-pages')}>📄 Shop Pages</button>
@@ -149,7 +130,7 @@ export default function AdminDashboard() {
 
         <main className="admin-main">
 
-          {/* ═══ DEALS TAB ═══ */}
+          {/* DEALS TAB */}
           {activeTab === 'deals' && (
             <>
               <div className="admin-stats">
@@ -167,34 +148,43 @@ export default function AdminDashboard() {
                 <button className="admin-btn-primary admin-add-btn" onClick={() => { setEditingDeal(null); setShowDealForm(true); }}>+ Add New Deal</button>
               </div>
               {loadingDeals ? <div className="admin-loading">Loading...</div> : filteredDeals.length === 0 ? <div className="admin-empty">No deals found.</div> : (
-                <div className="admin-deals-grid">
-                  {filteredDeals.map((deal) => (
-                    <div key={deal.id} className={`admin-deal-card ${!deal.active?'inactive':''}`}>
-                      <div className="admin-deal-img">
-                        <img src={deal.image_url || '/icon-512.png'} alt={deal.title} />
-                        {!deal.active && <div className="admin-inactive-badge">Hidden</div>}
-                      </div>
-                      <div className="admin-deal-body">
-                        <p className="admin-deal-title">{deal.title}</p>
-                        <div className="admin-deal-meta">
-                          <span className="admin-deal-price">${Number(deal.sale_price).toFixed(2)}</span>
-                          {deal.original_price && <span className="admin-deal-orig">${Number(deal.original_price).toFixed(2)}</span>}
-                          <span className="admin-deal-platform">{deal.platform}</span>
+                <>
+                  <div className="admin-deals-grid">
+                    {filteredDeals.map((deal) => (
+                      <div key={deal.id} className={`admin-deal-card ${!deal.active?'inactive':''}`}>
+                        <div className="admin-deal-img">
+                          <img src={deal.image_url || '/icon-512.png'} alt={deal.title} />
+                          {!deal.active && <div className="admin-inactive-badge">Hidden</div>}
                         </div>
-                        <div className="admin-deal-actions">
-                          <button className="admin-action-btn edit" onClick={() => { setEditingDeal(deal); setShowDealForm(true); }}>Edit</button>
-                          <button className="admin-action-btn toggle" onClick={() => toggleActive('deals', deal.id, deal.active, setDeals)}>{deal.active?'Hide':'Show'}</button>
-                          <button className="admin-action-btn delete" onClick={() => deleteItem('deals', deal.id, deal.title, setDeals)}>Delete</button>
+                        <div className="admin-deal-body">
+                          <p className="admin-deal-title">{deal.title}</p>
+                          <div className="admin-deal-meta">
+                            <span className="admin-deal-price">${Number(deal.sale_price).toFixed(2)}</span>
+                            {deal.original_price && <span className="admin-deal-orig">${Number(deal.original_price).toFixed(2)}</span>}
+                            <span className="admin-deal-platform">{deal.platform}</span>
+                          </div>
+                          <div className="admin-deal-actions">
+                            <button className="admin-action-btn edit" onClick={() => { setEditingDeal(deal); setShowDealForm(true); }}>Edit</button>
+                            <button className="admin-action-btn toggle" onClick={() => toggleActive('deals', deal.id, deal.active, setDeals)}>{deal.active?'Hide':'Show'}</button>
+                            <button className="admin-action-btn delete" onClick={() => deleteItem('deals', deal.id, deal.title, setDeals)}>Delete</button>
+                          </div>
                         </div>
                       </div>
+                    ))}
+                  </div>
+                  {hasMoreDeals && (
+                    <div className="admin-load-more-wrap">
+                      <button className="admin-load-more-btn" onClick={() => setDealsPage((p) => p + 1)}>
+                        Load More Deals ({allFilteredDeals.length - filteredDeals.length} remaining)
+                      </button>
                     </div>
-                  ))}
-                </div>
+                  )}
+                </>
               )}
             </>
           )}
 
-          {/* ═══ SHOP PAGES TAB ═══ */}
+          {/* SHOP PAGES TAB */}
           {activeTab === 'shop-pages' && (
             <>
               <div className="admin-stats">
@@ -229,7 +219,7 @@ export default function AdminDashboard() {
             </>
           )}
 
-          {/* ═══ SHOP DEALS TAB ═══ */}
+          {/* SHOP DEALS TAB */}
           {activeTab === 'shop-deals' && (
             <>
               <div className="admin-stats">
@@ -238,7 +228,7 @@ export default function AdminDashboard() {
                 <div className="admin-stat-card"><div className="admin-stat-num" style={{color:'#999'}}>{shopDeals.filter(d=>!d.active).length}</div><div className="admin-stat-label">Inactive</div></div>
               </div>
               <div className="admin-toolbar">
-                <select value={selectedPageFilter} onChange={(e) => setSelectedPageFilter(e.target.value)} className="admin-search-input" style={{maxWidth:200}}>
+                <select value={selectedPageFilter} onChange={(e) => setSelectedPageFilter(e.target.value)} className="admin-search-input" style={{maxWidth:220}}>
                   <option value="all">All Pages</option>
                   {shopPages.map((p) => <option key={p.id} value={p.id}>{p.icon} {p.page_name}</option>)}
                 </select>
@@ -271,7 +261,7 @@ export default function AdminDashboard() {
             </>
           )}
 
-          {/* ═══ LIBRARY TAB ═══ */}
+          {/* LIBRARY TAB */}
           {activeTab === 'library' && (
             <>
               <div className="admin-stats">
