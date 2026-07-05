@@ -52,8 +52,7 @@ export default function ShopPage({ page, deals }) {
 
       <Header search="" onSearch={() => {}} totalCount={0} />
 
-      {/* Breadcrumb */}
-      <nav aria-label="Breadcrumb" style={{ padding: '10px 20px', maxWidth: 1000, margin: '0 auto', fontSize: 12, color: '#999' }}>
+      <nav aria-label="Breadcrumb" style={{ padding: '10px 20px', maxWidth: '100%', fontSize: 12, color: '#999' }}>
         <Link href="/" style={{ color: '#ff6b00' }}>Home</Link>
         <span style={{ margin: '0 8px' }}>›</span>
         <span style={{ color: '#ff6b00' }}>Shop &amp; Save</span>
@@ -61,49 +60,56 @@ export default function ShopPage({ page, deals }) {
         <span style={{ color: '#aaa' }}>{page.page_name}</span>
       </nav>
 
-      <main className="static-page" style={{ paddingTop: 0 }}>
-        <div className="static-container">
+      <main style={{ width: '100%', padding: '0 0 40px' }}>
 
-          {/* Hero */}
-          <div className="static-hero">
-            <h1>{page.icon} <span>{page.page_name}</span></h1>
-            {page.description && <p>{page.description}</p>}
-          </div>
-
-          {/* 1. HTML Page Content FIRST */}
-          {page.content && (
-            <div className="static-content" style={{ marginBottom: 24 }}>
-              <div className="static-card shop-page-content" dangerouslySetInnerHTML={{ __html: page.content }} />
-            </div>
-          )}
-
-          {/* 2. Deal Cards SECOND */}
-          {deals && deals.length > 0 && (
-            <div className="shop-deals-section">
-              <h2 className="shop-deals-heading">Latest Deals</h2>
-              <div className="shop-deals-grid">
-                {deals.map((deal) => (
-                  <a key={deal.id} href={deal.affiliate_link} target="_blank" rel="noopener noreferrer sponsored" className="shop-deal-card">
-                    {deal.image_url && (
-                      <div className="shop-deal-img-wrap">
-                        <img src={deal.image_url} alt={deal.deal_name} />
-                      </div>
-                    )}
-                    <div className="shop-deal-name">{deal.deal_name}</div>
-                    {deal.description && (
-                      <div className="shop-deal-desc" dangerouslySetInnerHTML={{ __html: deal.description }} />
-                    )}
-                    <div className="shop-deal-btn">Shop Now →</div>
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div className="static-back">
-            <Link href="/" className="back-btn">← Back to All Deals</Link>
-          </div>
+        {/* Hero */}
+        <div className="static-hero" style={{ padding: '20px 20px 16px' }}>
+          <h1 style={{ fontSize: 'clamp(24px,4vw,40px)', fontWeight: 900, fontFamily: "'Barlow Condensed',sans-serif", textTransform: 'uppercase', color: '#1a1a1a', marginBottom: 6 }}>
+            {page.icon} <span style={{ color: '#ff6b00' }}>{page.page_name}</span>
+          </h1>
+          {page.description && <p style={{ color: '#666', fontSize: 14 }}>{page.description}</p>}
         </div>
+
+        {/* 1. HTML Page Content FIRST — full width */}
+        {page.content && (
+          <div style={{ padding: '0 20px 20px', maxWidth: 1100, margin: '0 auto' }}>
+            <div className="static-card shop-page-content" dangerouslySetInnerHTML={{ __html: page.content }} />
+          </div>
+        )}
+
+        {/* 2. Deal Cards — full browser width */}
+        {deals && deals.length > 0 && (
+          <div style={{ padding: '0 16px' }}>
+            <h2 className="shop-deals-heading">Latest Deals</h2>
+            <div className="shop-deals-grid-full">
+              {deals.map((deal) => (
+                <a
+                  key={deal.id}
+                  href={deal.affiliate_link}
+                  target="_blank"
+                  rel="noopener noreferrer sponsored"
+                  className="shop-deal-card"
+                >
+                  {deal.image_url && (
+                    <div className="shop-deal-img-wrap">
+                      <img src={deal.image_url} alt={deal.deal_name} />
+                    </div>
+                  )}
+                  <div className="shop-deal-name">{deal.deal_name}</div>
+                  {deal.description && (
+                    <div className="shop-deal-desc" dangerouslySetInnerHTML={{ __html: deal.description }} />
+                  )}
+                  <div className="shop-deal-btn">Shop Now →</div>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div style={{ textAlign: 'center', marginTop: 28, paddingBottom: 20 }}>
+          <Link href="/" className="back-btn">← Back to All Deals</Link>
+        </div>
+
       </main>
 
       <FooterSubscribe />
@@ -125,9 +131,7 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }) {
   const { data: pageData } = await supabase.from('shop_pages').select('*').eq('slug', params.slug).eq('active', true).single();
   if (!pageData) return { notFound: true };
-
   const { data: dealsData } = await supabase.from('shop_deals').select('*').eq('page_id', pageData.id).eq('active', true).order('created_at', { ascending: false });
-
   return {
     props: { page: pageData, deals: dealsData || [] },
     revalidate: 60,
