@@ -6,11 +6,11 @@ import { supabase } from '../lib/supabase';
 
 const SITE_URL = "https://www.whileushop.com";
 
-// Convert Cloudinary URL to force download
+// Force download via Cloudinary fl_attachment flag
 function getDownloadUrl(url) {
-  if (!url) return url;
-  // For Cloudinary URLs, add fl_attachment to force download
+  if (!url) return '#';
   if (url.includes('cloudinary.com')) {
+    // Insert fl_attachment into the URL
     return url.replace('/upload/', '/upload/fl_attachment/');
   }
   return url;
@@ -24,6 +24,11 @@ export default function FreebiesLibrary({ resources }) {
     url: `${SITE_URL}/freebies-library`,
     description: 'Download free saving guides, coupon checklists and budgeting templates — completely free digital resources from WhileUShop.com.',
     publisher: { '@type': 'Organization', name: 'WhileUShop.com', url: SITE_URL },
+  };
+
+  const handleDownload = (url, title) => {
+    // Open in new tab — works for all file types and cross-origin URLs
+    window.open(getDownloadUrl(url), '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -70,15 +75,13 @@ export default function FreebiesLibrary({ resources }) {
                       dangerouslySetInnerHTML={{ __html: item.description }}
                     />
                   )}
-                  <a
-                    href={getDownloadUrl(item.file_url)}
-                    download
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    onClick={() => handleDownload(item.file_url, item.title)}
                     className="library-download-btn"
+                    style={{ border: 'none', cursor: 'pointer', width: '100%' }}
                   >
                     ⬇ Download Free
-                  </a>
+                  </button>
                 </div>
               ))}
             </div>
