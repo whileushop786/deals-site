@@ -2140,3 +2140,10 @@ body.has-ad-banner {
 }
 
 .deal-count-badge strong { color: #ff6b00; }
+
+/* Show deal count badge on all screen sizes */
+.deal-count-badge {
+  display: flex !important;
+  font-size: 11px;
+  padding: 4px 8px;
+}
