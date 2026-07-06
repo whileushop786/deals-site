@@ -52,6 +52,7 @@ export default function ShopPage({ page, deals }) {
 
       <Header search="" onSearch={() => {}} totalCount={0} />
 
+      {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" style={{ padding: '10px 20px', maxWidth: '100%', fontSize: 12, color: '#999' }}>
         <Link href="/" style={{ color: '#ff6b00' }}>Home</Link>
         <span style={{ margin: '0 8px' }}>›</span>
@@ -70,37 +71,46 @@ export default function ShopPage({ page, deals }) {
           {page.description && <p style={{ color: '#666', fontSize: 14 }}>{page.description}</p>}
         </div>
 
-        {/* 1. HTML Page Content FIRST — full width */}
+        {/* 1. HTML Page Content FIRST */}
         {page.content && (
           <div style={{ padding: '0 20px 20px', maxWidth: 1100, margin: '0 auto' }}>
             <div className="static-card shop-page-content" dangerouslySetInnerHTML={{ __html: page.content }} />
           </div>
         )}
 
-        {/* 2. Deal Cards — full browser width */}
+        {/* 2. Deal Cards — full width */}
         {deals && deals.length > 0 && (
           <div style={{ padding: '0 16px' }}>
             <h2 className="shop-deals-heading">Latest Deals</h2>
             <div className="shop-deals-grid-full">
               {deals.map((deal) => (
-                <a
-                  key={deal.id}
-                  href={deal.affiliate_link}
-                  target="_blank"
-                  rel="noopener noreferrer sponsored"
-                  className="shop-deal-card"
-                >
-                  {deal.image_url && (
-                    <div className="shop-deal-img-wrap">
-                      <img src={deal.image_url} alt={deal.deal_name} />
+                <div key={deal.id} className="shop-deal-card-wrap">
+                  <a
+                    href={deal.affiliate_link}
+                    target="_blank"
+                    rel="noopener noreferrer sponsored"
+                    className="shop-deal-card"
+                  >
+                    {deal.image_url && (
+                      <div className="shop-deal-img-wrap">
+                        <img src={deal.image_url} alt={deal.deal_name} />
+                      </div>
+                    )}
+                    <div className="shop-deal-name">{deal.deal_name}</div>
+                    <div className="shop-deal-btn">Shop Now →</div>
+                  </a>
+
+                  {/* Description box — styled like product details box */}
+                  {deal.description && (
+                    <div className="shop-deal-desc-box">
+                      <h3 className="shop-deal-desc-heading">Deal Details</h3>
+                      <div
+                        className="shop-deal-desc-content"
+                        dangerouslySetInnerHTML={{ __html: deal.description }}
+                      />
                     </div>
                   )}
-                  <div className="shop-deal-name">{deal.deal_name}</div>
-                  {deal.description && (
-                    <div className="shop-deal-desc" dangerouslySetInnerHTML={{ __html: deal.description }} />
-                  )}
-                  <div className="shop-deal-btn">Shop Now →</div>
-                </a>
+                </div>
               ))}
             </div>
           </div>
