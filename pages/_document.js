@@ -30,22 +30,16 @@ export default function Document() {
         <link rel="dns-prefetch" href="https://m.media-amazon.com" />
         <link rel="preconnect" href="https://m.media-amazon.com" crossOrigin="anonymous" />
 
-        {/* ── Google AdSense ── */}
-        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT && (
-          <script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT}`}
-            crossOrigin="anonymous"
-          />
-        )}
+        {/* ── Google AdSense Auto Ads ── */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2723752519561361"
+          crossOrigin="anonymous"
+        />
       </Head>
       <body>
         <Main />
         <NextScript />
-
-
-
-              
       </body>
     </Html>
   );

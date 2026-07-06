@@ -8,7 +8,7 @@ import { SkeletonGrid } from '../components/SkeletonCard';
 import Header from '../components/Header';
 import EmailPopup from '../components/EmailPopup';
 import Ticker from '../components/Ticker';
-import AdBanner from '../components/AdBanner';
+
 import FooterSubscribe from '../components/FooterSubscribe';
 
 const SITE_NAME = "WhileUShop.com — Best Online Deals, Coupons & Promo Codes";
@@ -235,7 +235,7 @@ export default function Home() {
         <p>© {new Date().getFullYear()} <a href={SITE_URL}>WhileUShop.com</a> — All rights reserved.</p>
       </footer>
 
-      <AdBanner />
+
     </>
   );
 }
