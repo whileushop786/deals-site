@@ -55,23 +55,6 @@ export default function Header({ search, onSearch, totalCount }) {
         </div>
       </header>
 
-<!-- Default Statcounter code for usa freebies
-http://www.whileushop.com -->
-<script type="text/javascript">
-var sc_project=11206781; 
-var sc_invisible=1; 
-var sc_security="bf9c6a09"; 
-</script>
-<script type="text/javascript"
-src="https://www.statcounter.com/counter/counter.js"
-async></script>
-<noscript><div class="statcounter"><a title="Web Analytics"
-href="https://statcounter.com/" target="_blank"><img
-class="statcounter"
-src="https://c.statcounter.com/11206781/0/bf9c6a09/1/"
-alt="Web Analytics"
-referrerPolicy="no-referrer-when-downgrade"></a></div></noscript>
-<!-- End of Statcounter Code -->
 
             
       <div className="social-banner">
