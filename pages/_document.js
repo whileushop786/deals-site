@@ -29,17 +29,25 @@ export default function Document() {
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://m.media-amazon.com" />
         <link rel="preconnect" href="https://m.media-amazon.com" crossOrigin="anonymous" />
-
-        {/* ── Google AdSense Auto Ads ── */}
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2723752519561361"
-          crossOrigin="anonymous"
-        />
       </Head>
       <body>
         <Main />
         <NextScript />
+
+        {/* ── Statcounter Analytics ── */}
+        <script type="text/javascript" dangerouslySetInnerHTML={{ __html: `
+          var sc_project=11206781;
+          var sc_invisible=1;
+          var sc_security="bf9c6a09";
+        `}} />
+        <script type="text/javascript" src="https://www.statcounter.com/counter/counter.js" async />
+        <noscript>
+          <div className="statcounter">
+            <a title="Web Analytics Made Easy - Statcounter" href="https://statcounter.com/" target="_blank" rel="noopener noreferrer">
+              <img className="statcounter" src="https://c.statcounter.com/11206781/0/bf9c6a09/1/" alt="Web Analytics Made Easy - Statcounter" referrerPolicy="no-referrer-when-downgrade" />
+            </a>
+          </div>
+        </noscript>
       </body>
     </Html>
   );
