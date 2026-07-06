@@ -12,12 +12,7 @@ export default function About() {
     name: 'About WhileUShop.com',
     url: `${SITE_URL}/about`,
     description: 'Learn about WhileUShop.com — your trusted source for handpicked online deals, verified coupon codes, promo offers and exclusive discounts from top U.S. stores.',
-    publisher: {
-      '@type': 'Organization',
-      name: 'WhileUShop.com',
-      url: SITE_URL,
-      logo: `${SITE_URL}/icon-512.png`,
-    },
+    publisher: { '@type': 'Organization', name: 'WhileUShop.com', url: SITE_URL },
   };
 
   return (
@@ -92,13 +87,13 @@ export default function About() {
               <div className="static-icon">📢</div>
               <h2>Stay Connected</h2>
               <p>Never miss a deal! Follow us on our social channels for real-time updates:</p>
-              <ul className="static-list">
-                <li>📱 <strong>Telegram</strong> — Fastest updates, direct to your phone</li>
-                <li>📘 <strong>Facebook</strong> — Community deals & announcements</li>
-                <li>📸 <strong>Instagram</strong> — Visual deals & lifestyle picks</li>
-                <li>💬 <strong>WhatsApp</strong> — Quick deal alerts, no chats</li>
-                <li>▶️ <strong>YouTube</strong> — Product reviews & deal videos</li>
-              </ul>
+              <div className="contact-channels">
+                <a href="https://t.me/whileushop" target="_blank" rel="noopener noreferrer" className="channel-btn telegram">📱 Telegram Channel</a>
+                <a href="https://chat.whatsapp.com/Ei6fHrUYhyx5GZTHBF5IFF" target="_blank" rel="noopener noreferrer" className="channel-btn whatsapp">💬 WhatsApp Channel</a>
+                <a href="https://www.facebook.com/whileushop786" target="_blank" rel="noopener noreferrer" className="channel-btn facebook">📘 Facebook Page</a>
+                <a href="https://instagram.com/crazydealshunter" target="_blank" rel="noopener noreferrer" className="channel-btn instagram">📸 Instagram</a>
+                <a href="https://www.youtube.com/@SnagItUSA" target="_blank" rel="noopener noreferrer" className="channel-btn youtube">▶️ YouTube</a>
+              </div>
             </div>
 
             <div className="static-card">

@@ -19,7 +19,7 @@ export default function Contact() {
     <>
       <Head>
         <title>Contact Us — WhileUShop.com | Get in Touch</title>
-        <meta name="description" content="Contact WhileUShop.com for deal submissions, business collaborations, or general queries. Reach us at hello@whileushop.com. We'd love to hear from you!" />
+        <meta name="description" content="Contact WhileUShop.com for deal submissions, business collaborations, or general queries. Reach us at support@whileushop.com. We'd love to hear from you!" />
         <meta name="keywords" content="contact WhileUShop, deal submission, business collaboration, online deals contact, coupon codes support, promo codes help" />
         <meta name="robots" content="index, follow" />
         <meta name="author" content="WhileUShop.com" />
@@ -50,7 +50,7 @@ export default function Contact() {
               <div className="static-icon">📧</div>
               <h2>Email Us</h2>
               <p>For any queries, deal submissions, collaborations or feedback, reach out to us at:</p>
-              <a href="mailto:hello@whileushop.com" className="contact-link">hello@whileushop.com</a>
+              <a href="mailto:support@whileushop.com" className="contact-link">support@whileushop.com</a>
               <p style={{marginTop: '12px', fontSize: '13px', color: '#888'}}>We typically respond within 24–48 hours on business days.</p>
             </div>
 
@@ -71,7 +71,7 @@ export default function Contact() {
               <div className="static-icon">🤝</div>
               <h2>Business & Collaborations</h2>
               <p>Are you a brand, seller, or PR agency looking to feature your products on WhileUShop.com? We're open to collaborations!</p>
-              <p>Please email us at <a href="mailto:business@whileushop.com" className="inline-link">business@whileushop.com</a> with details about your product and collaboration idea.</p>
+              <p>Please email us at <a href="mailto:support@whileushop.com" className="inline-link">support@whileushop.com</a> with details about your product and collaboration idea.</p>
             </div>
 
             <div className="static-card">
