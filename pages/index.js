@@ -232,7 +232,7 @@ export default function Home() {
 
       <footer className="footer">
         <p>As an Amazon Associate, we earn from qualifying purchases. Prices and availability are subject to change.</p>
-        <p>© {new Date().getFullYear()} <a href={SITE_URL}>WhileUShop.com</a> — All rights reserved.</p>
+        <p>© {new Date().getFullYear()} <a href={SITE_URL}>WhileUShop.com</a> — All rights reservedd.</p>
       </footer>
 
       <AdBanner />
