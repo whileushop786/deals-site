@@ -97,19 +97,18 @@ export default function ShopPage({ page, deals }) {
                       </div>
                     )}
                     <div className="shop-deal-name">{deal.deal_name}</div>
+                    {/* Description box above Shop Now button */}
+                    {deal.description && (
+                      <div className="shop-deal-desc-box">
+                        <h3 className="shop-deal-desc-heading">Deal Details</h3>
+                        <div
+                          className="shop-deal-desc-content"
+                          dangerouslySetInnerHTML={{ __html: deal.description }}
+                        />
+                      </div>
+                    )}
                     <div className="shop-deal-btn">Shop Now →</div>
                   </a>
-
-                  {/* Description box — styled like product details box */}
-                  {deal.description && (
-                    <div className="shop-deal-desc-box">
-                      <h3 className="shop-deal-desc-heading">Deal Details</h3>
-                      <div
-                        className="shop-deal-desc-content"
-                        dangerouslySetInnerHTML={{ __html: deal.description }}
-                      />
-                    </div>
-                  )}
                 </div>
               ))}
             </div>
