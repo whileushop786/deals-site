@@ -80,11 +80,33 @@ export default function DealPage({ deal, structuredData }) {
     });
   };
 
-  const handleShare = () => {
+  const handleShare = async () => {
+    const shareText = [
+      `🔥 ${title}`,
+      sale_price ? `💰 Only $${Number(sale_price).toFixed(2)}${discount ? ` (${discount}% OFF)` : ''}` : '',
+      coupon_code ? `🏷️ Coupon Code: ${coupon_code}` : '',
+      `🛒 Grab it here: ${dealUrl}`,
+      `\n📢 More deals at WhileUShop.com`,
+    ].filter(Boolean).join('\n');
+
     if (navigator.share) {
-      navigator.share({ title, text: `🔥 ${title} — only $${sale_price}!`, url: dealUrl });
+      try {
+        await navigator.share({
+          title: `${title} — $${Number(sale_price).toFixed(2)}${discount ? ` (${discount}% OFF)` : ''}`,
+          text: shareText,
+          url: dealUrl,
+        });
+      } catch (err) {
+        // User cancelled share — do nothing
+        if (err.name !== 'AbortError') {
+          navigator.clipboard.writeText(`${shareText}`).then(() => alert('Deal details copied to clipboard!'));
+        }
+      }
     } else {
-      navigator.clipboard.writeText(dealUrl).then(() => alert('Link copied!'));
+      // Desktop fallback — copy full share text to clipboard
+      navigator.clipboard.writeText(shareText).then(() => {
+        alert('Deal details copied to clipboard! Paste anywhere to share.');
+      });
     }
   };
 
@@ -120,11 +142,7 @@ export default function DealPage({ deal, structuredData }) {
             ))
           : <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
         }
-
-
-
-
-</Head>
+      </Head>
 
       <Header search="" onSearch={() => {}} totalCount={0} />
 
