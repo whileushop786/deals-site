@@ -29,6 +29,13 @@ export default function Document() {
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://m.media-amazon.com" />
         <link rel="preconnect" href="https://m.media-amazon.com" crossOrigin="anonymous" />
+
+        {/* ── Google AdSense ── */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2723752519561361"
+          crossOrigin="anonymous"
+        />
       </Head>
       <body>
         <Main />
