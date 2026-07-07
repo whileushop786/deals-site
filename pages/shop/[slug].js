@@ -52,8 +52,7 @@ export default function ShopPage({ page, deals }) {
 
       <Header search="" onSearch={() => {}} totalCount={0} />
 
-      {/* Breadcrumb */}
-      <nav aria-label="Breadcrumb" style={{ padding: '10px 20px', maxWidth: '100%', fontSize: 12, color: '#999' }}>
+      <nav aria-label="Breadcrumb" style={{ padding: '10px 20px', fontSize: 12, color: '#999' }}>
         <Link href="/" style={{ color: '#ff6b00' }}>Home</Link>
         <span style={{ margin: '0 8px' }}>›</span>
         <span style={{ color: '#ff6b00' }}>Shop &amp; Save</span>
@@ -63,51 +62,96 @@ export default function ShopPage({ page, deals }) {
 
       <main style={{ width: '100%', padding: '0 0 40px' }}>
 
-        {/* Hero */}
-        <div className="static-hero" style={{ padding: '20px 20px 16px' }}>
+        <div style={{ padding: '16px 20px', textAlign: 'center' }}>
           <h1 style={{ fontSize: 'clamp(24px,4vw,40px)', fontWeight: 900, fontFamily: "'Barlow Condensed',sans-serif", textTransform: 'uppercase', color: '#1a1a1a', marginBottom: 6 }}>
             {page.icon} <span style={{ color: '#ff6b00' }}>{page.page_name}</span>
           </h1>
           {page.description && <p style={{ color: '#666', fontSize: 14 }}>{page.description}</p>}
         </div>
 
-        {/* 1. HTML Page Content FIRST */}
+        {/* Page content */}
         {page.content && (
           <div style={{ padding: '0 20px 20px', maxWidth: 1100, margin: '0 auto' }}>
             <div className="static-card shop-page-content" dangerouslySetInnerHTML={{ __html: page.content }} />
           </div>
         )}
 
-        {/* 2. Deal Cards — full width */}
+        {/* Deal Cards */}
         {deals && deals.length > 0 && (
           <div style={{ padding: '0 16px' }}>
             <h2 className="shop-deals-heading">Latest Deals</h2>
-            <div className="shop-deals-grid-full">
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+              gap: '40px',
+              width: '100%',
+              marginBottom: '24px'
+            }}>
               {deals.map((deal) => (
-                <div key={deal.id} className="shop-deal-card-wrap">
+                <div key={deal.id} style={{
+                  background: '#fff',
+                  borderRadius: '12px',
+                  border: '1px solid #e5e5e5',
+                  overflow: 'hidden',
+                  boxShadow: '0 2px 12px rgba(0,0,0,0.07)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}>
+                  {/* Image */}
+                  {deal.image_url && (
+                    <img
+                      src={deal.image_url}
+                      alt={deal.deal_name}
+                      style={{ width: '100%', height: 'auto', display: 'block' }}
+                    />
+                  )}
+
+                  {/* Deal name */}
+                  <div style={{
+                    padding: '12px 14px 8px',
+                    fontSize: '14px',
+                    fontWeight: '700',
+                    color: '#1a1a1a',
+                    lineHeight: '1.4'
+                  }}>
+                    {deal.deal_name}
+                  </div>
+
+                  {/* Description box */}
+                  {deal.description && (
+                    <div style={{
+                      margin: '0 14px',
+                      padding: '10px 12px',
+                      background: 'transparent',
+                      borderLeft: '3px solid #ff6b00',
+                      borderRadius: '8px',
+                      fontSize: '12px',
+                      color: '#555',
+                      lineHeight: '1.6',
+                    }}
+                      dangerouslySetInnerHTML={{ __html: deal.description }}
+                    />
+                  )}
+
+                  {/* Shop Now button */}
                   <a
                     href={deal.affiliate_link}
                     target="_blank"
                     rel="noopener noreferrer sponsored"
-                    className="shop-deal-card"
+                    style={{
+                      display: 'block',
+                      margin: '12px 14px 14px',
+                      background: '#ff6b00',
+                      color: '#fff',
+                      textAlign: 'center',
+                      padding: '10px',
+                      borderRadius: '8px',
+                      fontWeight: '700',
+                      fontSize: '14px',
+                      textDecoration: 'none',
+                    }}
                   >
-                    {deal.image_url && (
-                      <div className="shop-deal-img-wrap">
-                        <img src={deal.image_url} alt={deal.deal_name} />
-                      </div>
-                    )}
-                    <div className="shop-deal-name">{deal.deal_name}</div>
-                    {/* Description box above Shop Now button */}
-                    {deal.description && (
-                      <div className="shop-deal-desc-box">
-                        <h3 className="shop-deal-desc-heading">Deal Details</h3>
-                        <div
-                          className="shop-deal-desc-content"
-                          dangerouslySetInnerHTML={{ __html: deal.description }}
-                        />
-                      </div>
-                    )}
-                    <div className="shop-deal-btn">Shop Now →</div>
+                    Shop Now →
                   </a>
                 </div>
               ))}
@@ -115,7 +159,7 @@ export default function ShopPage({ page, deals }) {
           </div>
         )}
 
-        <div style={{ textAlign: 'center', marginTop: 28, paddingBottom: 20 }}>
+        <div style={{ textAlign: 'center', marginTop: 20, paddingBottom: 20 }}>
           <Link href="/" className="back-btn">← Back to All Deals</Link>
         </div>
 
