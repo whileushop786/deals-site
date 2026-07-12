@@ -2097,3 +2097,47 @@ body.has-ad-banner {
   .admin-tabs { overflow-x: auto; }
   .admin-tab-btn { white-space: nowrap; padding: 12px 12px; font-size: 12px; }
 }
+
+
+/* ── Pinned Deals Section ── */
+.pinned-section {
+  margin-bottom: 32px;
+  padding-top: 16px;
+}
+
+.pinned-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.pinned-icon { font-size: 18px; }
+
+.pinned-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #ff6b00;
+  white-space: nowrap;
+}
+
+.pinned-line {
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(to right, rgba(255,107,0,0.4), transparent);
+}
+
+/* ── Admin Pin Button ── */
+.admin-action-btn.pin {
+  background: #f0f0f0;
+  color: #888;
+}
+
+.admin-action-btn.pin-active {
+  background: #fff7e6;
+  color: #ff6b00;
+  font-weight: 800;
+}
+
