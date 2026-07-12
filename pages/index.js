@@ -2,13 +2,13 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { format, parseISO } from 'date-fns';
-import { getDeals, getTotalCount } from '../lib/supabase';
+import { getDeals, getTotalCount, getPinnedDeals } from '../lib/supabase';
 import DealCard from '../components/DealCard';
 import { SkeletonGrid } from '../components/SkeletonCard';
 import Header from '../components/Header';
 import EmailPopup from '../components/EmailPopup';
 import Ticker from '../components/Ticker';
-
+import PinnedDeals from '../components/PinnedDeals';
 import FooterSubscribe from '../components/FooterSubscribe';
 
 const SITE_NAME = "WhileUShop.com — Best Online Deals, Coupons & Promo Codes";
@@ -33,6 +33,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [pinnedDeals, setPinnedDeals] = useState([]);
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState('');
   const [query, setQuery] = useState('');
@@ -77,7 +78,10 @@ export default function Home() {
     }
   }, [router.isReady, router.query.q]);
 
-  useEffect(() => { fetchInitial(''); }, [fetchInitial]);
+  useEffect(() => {
+    fetchInitial('');
+    getPinnedDeals().then(setPinnedDeals);
+  }, [fetchInitial]);
 
   useEffect(() => {
     if (searchTimer.current) clearTimeout(searchTimer.current);
@@ -176,6 +180,8 @@ export default function Home() {
       <Ticker />
 
       <main className="container" style={{ paddingTop: 8, paddingBottom: 40 }}>
+        {/* Pinned deals always show at top */}
+        {pinnedDeals.length > 0 && <PinnedDeals deals={pinnedDeals} />}
         {loading ? (
           <div style={{ marginTop: 32 }}><SkeletonGrid /></div>
         ) : sortedDates.length === 0 ? (
