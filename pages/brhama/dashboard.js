@@ -81,9 +81,9 @@ export default function AdminDashboard() {
 
   const handleLogout = async () => { await signOut(); router.push('/brhama'); };
 
-  const toggleActive = async (table, id, current, setter) => {
-    const { error } = await supabase.from(table).update({ active: !current }).eq('id', id);
-    if (!error) setter((prev) => prev.map((d) => d.id === id ? { ...d, active: !current } : d));
+  const toggleActive = async (table, id, current, setter, field = 'active') => {
+    const { error } = await supabase.from(table).update({ [field]: !current }).eq('id', id);
+    if (!error) setter((prev) => prev.map((d) => d.id === id ? { ...d, [field]: !current } : d));
   };
 
   const deleteItem = async (table, id, title, setter) => {
@@ -166,6 +166,7 @@ export default function AdminDashboard() {
                           <div className="admin-deal-actions">
                             <button className="admin-action-btn edit" onClick={() => { setEditingDeal(deal); setShowDealForm(true); }}>Edit</button>
                             <button className="admin-action-btn toggle" onClick={() => toggleActive('deals', deal.id, deal.active, setDeals)}>{deal.active?'Hide':'Show'}</button>
+                          <button className={`admin-action-btn ${deal.pinned ? 'pin-active' : 'pin'}`} onClick={() => toggleActive('deals', deal.id, deal.pinned, setDeals, 'pinned')}>{deal.pinned?'📌 Unpin':'📌 Pin'}</button>
                             <button className="admin-action-btn delete" onClick={() => deleteItem('deals', deal.id, deal.title, setDeals)}>Delete</button>
                           </div>
                         </div>
