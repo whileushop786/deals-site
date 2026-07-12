@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useState } from 'react';
 import { getDealBySlug, getAllDeals } from '../lib/supabase';
-import { slugify } from '../lib/slugify';
+import { slugify, slugifyWithId } from '../lib/slugify';
 import Header from '../components/Header';
 import FooterSubscribe from '../components/FooterSubscribe';
 
@@ -28,7 +28,7 @@ function CartIcon({ size = 15 }) {
   );
 }
 
-export default function DealPage({ deal, structuredData }) {
+export default function DealPage({ deal, structuredData, canonicalSlug }) {
   const [copied, setCopied] = useState(false);
   const [imgError, setImgError] = useState(false);
 
@@ -50,11 +50,11 @@ export default function DealPage({ deal, structuredData }) {
     );
   }
 
-  const { title, image_url, original_price, sale_price, discount_percent, coupon_code, affiliate_link, platform = 'amazon', description, deal_date } = deal;
+  const { title, image_url, original_price, sale_price, discount_percent, coupon_code, affiliate_link, platform = 'amazon', description } = deal;
 
   const discount = discount_percent || (original_price && sale_price ? Math.round(((original_price - sale_price) / original_price) * 100) : null);
   const savings = original_price && sale_price ? (Number(original_price) - Number(sale_price)).toFixed(2) : null;
-  const dealUrl = `${SITE_URL}/${slugify(title)}`;
+  const dealUrl = `${SITE_URL}/${canonicalSlug}`;
   const fallbackImage = `${SITE_URL}/icon-512.png`;
   const metaImage = image_url || fallbackImage;
 
@@ -65,13 +65,6 @@ export default function DealPage({ deal, structuredData }) {
     coupon_code ? `Use code ${coupon_code}.` : '',
     'Best price via WhileUShop.com.',
   ].filter(Boolean).join(' ').substring(0, 160);
-
-  const metaKeywords = [
-    title, `${title} deal`, `${title} coupon`,
-    coupon_code ? `${title} coupon code ${coupon_code}` : '',
-    `${title} discount`, `buy ${title.split(' ').slice(0, 5).join(' ')}`,
-    platform ? `${platform} deal` : '', 'WhileUShop', 'promo code', 'best price',
-  ].filter(Boolean).join(', ');
 
   const handleCopy = () => {
     navigator.clipboard.writeText(coupon_code).then(() => {
@@ -91,22 +84,14 @@ export default function DealPage({ deal, structuredData }) {
 
     if (navigator.share) {
       try {
-        await navigator.share({
-          title: `${title} — $${Number(sale_price).toFixed(2)}${discount ? ` (${discount}% OFF)` : ''}`,
-          text: shareText,
-          url: dealUrl,
-        });
+        await navigator.share({ title: `${title} — $${Number(sale_price).toFixed(2)}`, text: shareText, url: dealUrl });
       } catch (err) {
-        // User cancelled share — do nothing
         if (err.name !== 'AbortError') {
-          navigator.clipboard.writeText(`${shareText}`).then(() => alert('Deal details copied to clipboard!'));
+          navigator.clipboard.writeText(shareText).then(() => alert('Deal details copied!'));
         }
       }
     } else {
-      // Desktop fallback — copy full share text to clipboard
-      navigator.clipboard.writeText(shareText).then(() => {
-        alert('Deal details copied to clipboard! Paste anywhere to share.');
-      });
+      navigator.clipboard.writeText(shareText).then(() => alert('Deal details copied to clipboard!'));
     }
   };
 
@@ -115,26 +100,20 @@ export default function DealPage({ deal, structuredData }) {
       <Head>
         <title>{title} — ${Number(sale_price).toFixed(2)}{discount ? ` (${discount}% OFF)` : ''} | WhileUShop.com</title>
         <meta name="description" content={metaDesc} />
-        <meta name="keywords" content={metaKeywords} />
         <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
-        <meta name="author" content="WhileUShop.com" />
         <meta property="og:type" content="product" />
         <meta property="og:url" content={dealUrl} />
-        <meta property="og:title" content={`🔥 ${title} — $${Number(sale_price).toFixed(2)}${discount ? ` (${discount}% OFF)` : ''}`} />
+        <meta property="og:title" content={`🔥 ${title} — $${Number(sale_price).toFixed(2)}`} />
         <meta property="og:description" content={metaDesc} />
         <meta property="og:image" content={metaImage} />
-        <meta property="og:image:width" content="800" />
-        <meta property="og:image:height" content="800" />
         <meta property="og:image:alt" content={title} />
         <meta property="og:site_name" content="WhileUShop.com" />
-        <meta property="og:locale" content="en_US" />
         <meta property="product:price:amount" content={sale_price} />
         <meta property="product:price:currency" content="USD" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={`🔥 ${title} — $${Number(sale_price).toFixed(2)}`} />
         <meta name="twitter:description" content={metaDesc} />
         <meta name="twitter:image" content={metaImage} />
-        <meta name="twitter:image:alt" content={title} />
         <link rel="canonical" href={dealUrl} />
         {Array.isArray(structuredData)
           ? structuredData.map((schema, i) => (
@@ -193,7 +172,6 @@ export default function DealPage({ deal, structuredData }) {
               {description && (
                 <div className="deal-page-description">
                   <h2>Product Details</h2>
-                  {/* Renders HTML from admin panel correctly */}
                   <div dangerouslySetInnerHTML={{ __html: description }} />
                 </div>
               )}
@@ -231,7 +209,25 @@ export default function DealPage({ deal, structuredData }) {
 
 export async function getStaticPaths() {
   const deals = await getAllDeals();
-  const paths = deals.map((deal) => ({ params: { slug: slugify(deal.title) } }));
+  const paths = [];
+  const seenSlugs = new Set();
+
+  deals.forEach((deal) => {
+    const titleSlug = slugify(deal.title);
+    const idSlug = slugifyWithId(deal.title, deal.id);
+
+    if (seenSlugs.has(titleSlug)) {
+      // Duplicate title — use ID slug only
+      paths.push({ params: { slug: idSlug } });
+    } else {
+      // First occurrence — keep original title slug (for backward compatibility)
+      seenSlugs.add(titleSlug);
+      paths.push({ params: { slug: titleSlug } });
+      // Also add ID slug path so both work
+      paths.push({ params: { slug: idSlug } });
+    }
+  });
+
   return { paths, fallback: 'blocking' };
 }
 
@@ -239,14 +235,21 @@ export async function getStaticProps({ params }) {
   const deal = await getDealBySlug(params.slug);
   if (!deal) return { notFound: true };
 
+  // Determine canonical slug
+  // If slug matches title-only format → keep it (old URL, already shared)
+  // If it's a new deal with potential duplicate → use ID slug
+  const titleSlug = slugify(deal.title);
+  const idSlug = slugifyWithId(deal.title, deal.id);
+  const canonicalSlug = params.slug === idSlug ? idSlug : titleSlug;
+
   const platformName = deal.platform ? deal.platform.charAt(0).toUpperCase() + deal.platform.slice(1) : 'Online Store';
-  const dealUrl = `${SITE_URL}/${slugify(deal.title)}`;
+  const dealUrl = `${SITE_URL}/${canonicalSlug}`;
 
   const productSchema = {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: deal.title,
-    description: deal.description ? deal.description.replace(/<[^>]+>/g, '') : `${deal.title} at the best price via WhileUShop.com.`,
+    description: deal.description ? deal.description.replace(/<[^>]+>/g, '') : `${deal.title} at the best price.`,
     image: [deal.image_url || `${SITE_URL}/icon-512.png`],
     url: dealUrl,
     sku: `WUS-${deal.id}`,
@@ -260,16 +263,6 @@ export async function getStaticProps({ params }) {
       itemCondition: 'https://schema.org/NewCondition',
       availability: 'https://schema.org/InStock',
       seller: { '@type': 'Organization', name: platformName },
-      shippingDetails: {
-        '@type': 'OfferShippingDetails',
-        shippingRate: { '@type': 'MonetaryAmount', value: '0', currency: 'USD' },
-        shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'US' },
-        deliveryTime: {
-          '@type': 'ShippingDeliveryTime',
-          handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 1, unitCode: 'DAY' },
-          transitTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 5, unitCode: 'DAY' },
-        },
-      },
     },
   };
 
@@ -283,7 +276,7 @@ export async function getStaticProps({ params }) {
   };
 
   return {
-    props: { deal, structuredData: [productSchema, breadcrumbSchema] },
+    props: { deal, structuredData: [productSchema, breadcrumbSchema], canonicalSlug },
     revalidate: 60,
   };
 }
