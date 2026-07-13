@@ -7,10 +7,10 @@ export default function Document() {
         {/* ── Favicon ── */}
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
-        <link rel="apple-touch-icon" href="/icon-192.png" />
-        <link rel="manifest" href="/manifest.json" />    
+        <link rel="apple-touch-icon" href="/icon-192.png" />            
         <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/icon-16.png">
+        <link rel="manifest" href="/manifest.json" />
 
         {/* ── Fonts ── */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
