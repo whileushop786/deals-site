@@ -210,20 +210,14 @@ export default function DealPage({ deal, structuredData, canonicalSlug }) {
 export async function getStaticPaths() {
   const deals = await getAllDeals();
   const paths = [];
-  const seenSlugs = new Set();
 
   deals.forEach((deal) => {
     const titleSlug = slugify(deal.title);
     const idSlug = slugifyWithId(deal.title, deal.id);
 
-    if (seenSlugs.has(titleSlug)) {
-      // Duplicate title — use ID slug only
-      paths.push({ params: { slug: idSlug } });
-    } else {
-      // First occurrence — keep original title slug (for backward compatibility)
-      seenSlugs.add(titleSlug);
-      paths.push({ params: { slug: titleSlug } });
-      // Also add ID slug path so both work
+    // Always generate BOTH slug formats for every deal
+    paths.push({ params: { slug: titleSlug } });
+    if (idSlug !== titleSlug) {
       paths.push({ params: { slug: idSlug } });
     }
   });
@@ -235,9 +229,7 @@ export async function getStaticProps({ params }) {
   const deal = await getDealBySlug(params.slug);
   if (!deal) return { notFound: true };
 
-  // Determine canonical slug
-  // If slug matches title-only format → keep it (old URL, already shared)
-  // If it's a new deal with potential duplicate → use ID slug
+  // Canonical: if visited via ID slug → use ID slug, otherwise use title slug
   const titleSlug = slugify(deal.title);
   const idSlug = slugifyWithId(deal.title, deal.id);
   const canonicalSlug = params.slug === idSlug ? idSlug : titleSlug;
