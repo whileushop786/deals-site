@@ -31,8 +31,8 @@ export default function DealCard({ deal }) {
   const discount = discount_percent ||
     (original_price && sale_price ? Math.round(((original_price - sale_price) / original_price) * 100) : null);
 
-  // Check if price should be shown
-  const hasPrice = sale_price && Number(sale_price) > 0;
+  // Check if price should be shown — handles 0, '0', null, undefined
+  const hasPrice = sale_price !== null && sale_price !== undefined && sale_price !== '' && Number(sale_price) > 0;
 
   const slug = slugifyWithId(title, id);
   const fallbackImage = 'https://via.placeholder.com/300x300?text=No+Image';
