@@ -150,8 +150,7 @@ export default function DealPage({ deal, structuredData, canonicalSlug }) {
               <h1 className="deal-page-title">{title}</h1>
 
               {sale_price !== null && sale_price !== undefined && sale_price !== '' && Number(sale_price) > 0 && (
-  <div className="deal-page-prices">
-  <div className="deal-page-prices">
+    <div className="deal-page-prices">
     <span className="deal-page-sale">${Number(sale_price).toFixed(2)}</span>
     {original_price && Number(original_price) > 0 && (
       <span className="deal-page-orig">${Number(original_price).toFixed(2)}</span>
