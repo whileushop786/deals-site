@@ -149,12 +149,18 @@ export default function DealPage({ deal, structuredData, canonicalSlug }) {
               <div className="deal-page-platform">{platform}</div>
               <h1 className="deal-page-title">{title}</h1>
 
-              <div className="deal-page-prices">
-                <span className="deal-page-sale">${Number(sale_price).toFixed(2)}</span>
-                {original_price && <span className="deal-page-orig">${Number(original_price).toFixed(2)}</span>}
-                {discount && <span className="deal-page-disc-pill">{discount}% OFF</span>}
-                {savings && <span className="deal-page-savings">You save ${savings}!</span>}
-              </div>
+              {sale_price && Number(sale_price) > 0 && (
+  <div className="deal-page-prices">
+    <span className="deal-page-sale">${Number(sale_price).toFixed(2)}</span>
+    {original_price && Number(original_price) > 0 && (
+      <span className="deal-page-orig">${Number(original_price).toFixed(2)}</span>
+    )}
+    {discount && <span className="deal-page-disc-pill">{discount}% OFF</span>}
+    {savings && Number(savings) > 0 && (
+      <span className="deal-page-savings">You save ${savings}!</span>
+    )}
+  </div>
+)}
 
               {coupon_code && (
                 <div className="deal-page-coupon">
