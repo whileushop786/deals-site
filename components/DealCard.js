@@ -2,8 +2,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { slugifyWithId } from '../lib/slugify';
 
-const SITE_URL = 'https://www.whileushop.com';
-
 function getShopLabel(platform) {
   const map = {
     amazon: 'Shop on Amazon', walmart: 'Shop on Walmart', target: 'Shop on Target',
@@ -33,7 +31,9 @@ export default function DealCard({ deal }) {
   const discount = discount_percent ||
     (original_price && sale_price ? Math.round(((original_price - sale_price) / original_price) * 100) : null);
 
-  // Always use ID-based slug for new links — ensures uniqueness
+  // Check if price should be shown
+  const hasPrice = sale_price && Number(sale_price) > 0;
+
   const slug = slugifyWithId(title, id);
   const fallbackImage = 'https://via.placeholder.com/300x300?text=No+Image';
 
@@ -60,11 +60,17 @@ export default function DealCard({ deal }) {
 
         <div className="card-body">
           <p className="card-title">{title}</p>
-          <div className="card-prices">
-            <span className="price-sale">${Number(sale_price).toFixed(2)}</span>
-            {original_price && <span className="price-original">${Number(original_price).toFixed(2)}</span>}
-            {discount && <span className="discount-inline">{discount}%</span>}
-          </div>
+
+          {/* Only show price section if price > 0 */}
+          {hasPrice && (
+            <div className="card-prices">
+              <span className="price-sale">${Number(sale_price).toFixed(2)}</span>
+              {original_price && Number(original_price) > 0 && (
+                <span className="price-original">${Number(original_price).toFixed(2)}</span>
+              )}
+              {discount && <span className="discount-inline">{discount}%</span>}
+            </div>
+          )}
         </div>
       </Link>
 
