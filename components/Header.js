@@ -122,6 +122,7 @@ export default function Header({ search, onSearch, totalCount }) {
                   </ul>
                 )}
               </li>
+              <li><Link href="/shopping-guides" onClick={closeAll}>📖 Shopping Guides</Link></li>
               <li><Link href="/freebies-library" onClick={closeAll}>📚 Freebies Library</Link></li>
               <li><Link href="/about" onClick={closeAll}>👋 About Us</Link></li>
               <li><Link href="/contact" onClick={closeAll}>📩 Contact Us</Link></li>
