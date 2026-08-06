@@ -47,7 +47,48 @@ function generateSiteMap(deals, shopPages) {
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
-
+<url>
+    <loc>${SITE_URL}/shopping-guides</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${SITE_URL}/shopping-guides/amazon-shopping-guide</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${SITE_URL}/shopping-guides/walmart-shopping-guide</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${SITE_URL}/shopping-guides/macys-shopping-guide</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${SITE_URL}/shopping-guides/michael-kors-shopping-guide</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${SITE_URL}/shopping-guides/wayfair-shopping-guide</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${SITE_URL}/shopping-guides/online-shopping-guide</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
   <!-- Dynamic Shop & Save pages -->
 ${shopPages.map((page) => `  <url>
     <loc>${SITE_URL}/shop/${escapeXml(page.slug)}</loc>
